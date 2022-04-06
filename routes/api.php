@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\ReferenceController;
+use App\Http\Controllers\api\AuthenticationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,4 +18,8 @@ use App\Http\Controllers\api\ReferenceController;
 
 Route::prefix('reference')->group(function () {
     Route::get('/locations', [ReferenceController::class, 'locations']);
+});
+
+Route::prefix('authentication')->group(function () {
+    Route::post('/register', [AuthenticationController::class, 'register']);
 });
