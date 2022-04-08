@@ -18,6 +18,10 @@ use App\Http\Controllers\api\AuthenticationController;
 
 Route::prefix('reference')->group(function () {
     Route::get('/locations', [ReferenceController::class, 'locations']);
+    Route::get('/item/sections', [ReferenceController::class, 'itemSections']);
+    Route::get('/item/categories', [ReferenceController::class, 'itemCategories']);
+    Route::get('/item/conditions', [ReferenceController::class, 'itemConditions']);
+    Route::get('/item/warranties', [ReferenceController::class, 'itemWarranties']);
 });
 
 Route::prefix('authentication')->group(function () {
