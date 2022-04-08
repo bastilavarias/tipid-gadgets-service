@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\authentication\LoginRequest;
 use App\Http\Requests\authentication\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class AuthenticationController extends Controller
             'username' => $request->input('username'),
             'email' => $request->input('email'),
             'location' => $request->input('location'),
-            'password' => $request->input('password'),
+            'password' => bcrypt($request->input('password')),
         ]);
 
         return customResponse()
@@ -69,6 +70,31 @@ class AuthenticationController extends Controller
                 'user' => $createdUser,
             ])
             ->message('GitHub authentication success.')
+            ->success()
+            ->generate();
+    }
+
+    public function login(LoginRequest $request)
+    {
+        if (!Auth::attempt($request->all())) {
+            return customResponse()
+                ->data(null)
+                ->message('Invalid credentials.')
+                ->unathorized()
+                ->generate();
+        }
+
+        $accessToken = Auth::user()->createToken('authToken')->accessToken;
+        $user = User::where('id', Auth::id())
+            ->get()
+            ->first();
+
+        return customResponse()
+            ->data([
+                'user' => $user,
+                'access_token' => $accessToken,
+            ])
+            ->message('You have successfully logged in.')
             ->success()
             ->generate();
     }
