@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\authentication\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,7 +14,6 @@ class AuthenticationController extends Controller
 {
     public function register(RegisterRequest $request)
     {
-        info($request);
         $user = User::create([
             'name' => $request->input('name'),
             'username' => $request->input('username'),
@@ -29,29 +29,68 @@ class AuthenticationController extends Controller
             ->generate();
     }
 
-    public function githubRegistration(Request $request)
+    public function githubAuthentication(Request $request)
     {
-        $githubAuthResponse = Http::withHeaders(['Content: application/json'])->post(
-            'https://github.com/login/oauth/access_token',
-            [
-                'client_id' => env('GITHUB_CLIENT_ID'),
-                'client_secret' => env('GITHUB_CLIENT_SECRET'),
-                'code' => $request->input('code'),
-            ]
-        );
-
-        if ($githubAuthResponse->ok()) {
+        $githubAccessToken = $this->authenticateGithubCode($request->input('code'));
+        if (empty($githubAccessToken)) {
             return customResponse()
-                ->data($githubAuthResponse->json())
-                ->message('GitHub registration success.')
+                ->data(null)
+                ->message('Invalid GitHub code.')
+                ->failed()
+                ->generate();
+        }
+
+        $githubUser = $this->getGithubUser($githubAccessToken);
+        $foundUser = User::where('username', '=', $githubUser->login)
+            ->orWhere('email', '=', $githubUser->email)
+            ->first();
+
+        if ($foundUser !== null) {
+            return customResponse()
+                ->data([
+                    'access_token' => $foundUser->createToken('authToken')->accessToken,
+                    'user' => $foundUser,
+                ])
+                ->message('GitHub authentication success.')
                 ->success()
                 ->generate();
         }
 
+        $createdUser = User::create([
+            'name' => $githubUser->name,
+            'username' => $githubUser->login,
+            'email' => $githubUser->email,
+            'avatar' => $githubUser->avatar_url,
+        ]);
+
         return customResponse()
-            ->data(null)
-            ->message('GitHub registration failed.')
-            ->failed()
+            ->data([
+                'access_token' => $createdUser->createToken('authToken')->accessToken,
+                'user' => $createdUser,
+            ])
+            ->message('GitHub authentication success.')
+            ->success()
             ->generate();
+    }
+
+    public function authenticateGithubCode($code)
+    {
+        $response = Http::post('https://github.com/login/oauth/access_token', [
+            'client_id' => env('GITHUB_CLIENT_ID'),
+            'client_secret' => env('GITHUB_CLIENT_SECRET'),
+            'code' => $code,
+        ]);
+
+        $responseBody = $response->body();
+        $explodedString = explode('=', $responseBody);
+        return $explodedString[0] == 'access_token'
+            ? explode('&', $explodedString[1])[0] // access token
+            : null;
+    }
+
+    public function getGithubUser($accessToken)
+    {
+        $response = Http::withToken($accessToken)->get('https://api.github.com/user');
+        return json_decode($response->body());
     }
 }

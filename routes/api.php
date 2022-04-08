@@ -22,8 +22,8 @@ Route::prefix('reference')->group(function () {
 
 Route::prefix('authentication')->group(function () {
     Route::post('/register', [AuthenticationController::class, 'register']);
-    Route::post('/register/github', [
+    Route::post('/oauth2/github', [
         AuthenticationController::class,
-        'githubRegistration',
+        'githubAuthentication',
     ]);
 });
