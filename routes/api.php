@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\ItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\ReferenceController;
@@ -31,4 +32,8 @@ Route::prefix('authentication')->group(function () {
         AuthenticationController::class,
         'githubAuthentication',
     ]);
+});
+
+Route::prefix('item')->group(function () {
+    Route::post('/', [ItemController::class, 'store'])->middleware('auth:api');
 });
