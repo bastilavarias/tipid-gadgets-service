@@ -20,7 +20,7 @@ return new class extends Migration {
                 ->nullable()
                 ->unique();
             $table->decimal('price', 9, 3)->nullable();
-            $table->text('description')->nullable();
+            $table->longText('description')->nullable();
             $table->boolean('is_draft');
             $table->foreignId('user_id')->constrained('users');
             $table
