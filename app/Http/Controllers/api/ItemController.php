@@ -14,6 +14,29 @@ class ItemController extends Controller
 {
     public function store(StoreItemRequest $request)
     {
+        if (!empty($request->input('id'))) {
+            $itemID = $request->input('id');
+            $updatedItem = Item::where('id', $itemID)->update([
+                'user_id' => Auth::id(),
+                'id' => $itemID,
+                'item_section_id' => $request->input('item_section_id'),
+                'name' => $request->input('name'),
+                'item_category_id' => $request->input('item_category_id'),
+                'price' => $request->input('price'),
+                'item_condition_id' => $request->input('item_condition_id'),
+                'item_warranty_id' => $request->input('item_warranty_id'),
+                'description' => $request->input('description'),
+                'is_draft' => 0,
+            ]);
+            $foundItem = Item::where('id', $updatedItem)
+                ->get()
+                ->first();
+            return customResponse()
+                ->data($foundItem)
+                ->message('You have successfully posted an item.')
+                ->success()
+                ->generate();
+        }
         $createdItem = Item::create([
             'user_id' => Auth::id(),
             'item_section_id' => $request->input('item_section_id'),
@@ -25,15 +48,12 @@ class ItemController extends Controller
             'description' => $request->input('description'),
             'is_draft' => 0,
         ]);
-
         Item::where('id', $createdItem->id)->update([
             'slug' => Str::of($createdItem->name)->snake() . '_' . $createdItem->id,
         ]);
-
         $foundItem = Item::where('id', $createdItem->id)
             ->get()
             ->first();
-
         return customResponse()
             ->data($foundItem)
             ->message('You have successfully posted an item.')
@@ -68,15 +88,12 @@ class ItemController extends Controller
                 'description' => $request->input('description'),
                 'is_draft' => 1,
             ]);
-
             Item::where('id', $createdItem->id)->update([
                 'slug' => Str::of($createdItem->name)->snake() . '_' . $createdItem->id,
             ]);
-
             $foundItem = Item::where('id', $createdItem)
                 ->get()
                 ->first();
-
             return customResponse()
                 ->data($foundItem)
                 ->message('You have successfully created drafted item.')
@@ -88,7 +105,6 @@ class ItemController extends Controller
         $foundItem = Item::where('id', $itemID)
             ->get()
             ->first();
-
         if (!$foundItem->is_draft) {
             return customResponse()
                 ->data(null)
@@ -96,7 +112,6 @@ class ItemController extends Controller
                 ->failed()
                 ->generate();
         }
-
         $updatedItem = Item::where('id', $itemID)->update([
             'user_id' => Auth::id(),
             'id' => $itemID,
@@ -109,11 +124,9 @@ class ItemController extends Controller
             'description' => $request->input('description'),
             'is_draft' => 1,
         ]);
-
         $foundItem = Item::where('id', $updatedItem)
             ->get()
             ->first();
-
         return customResponse()
             ->data($foundItem)
             ->message('You have successfully updated drafted item.')
