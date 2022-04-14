@@ -19,13 +19,25 @@ return new class extends Migration {
                 ->string('slug')
                 ->nullable()
                 ->unique();
-            $table->decimal('price', 9, 3);
-            $table->text('description');
+            $table->decimal('price', 9, 3)->nullable();
+            $table->text('description')->nullable();
             $table->boolean('is_draft');
-            $table->foreignId('item_section_id')->constrained('item_sections');
-            $table->foreignId('item_category_id')->constrained('item_categories');
-            $table->foreignId('item_condition_id')->constrained('item_conditions');
-            $table->foreignId('item_warranty_id')->constrained('item_warranties');
+            $table
+                ->foreignId('item_section_id')
+                ->nullable()
+                ->constrained('item_sections');
+            $table
+                ->foreignId('item_category_id')
+                ->nullable()
+                ->constrained('item_categories');
+            $table
+                ->foreignId('item_condition_id')
+                ->nullable()
+                ->constrained('item_conditions');
+            $table
+                ->foreignId('item_warranty_id')
+                ->nullable()
+                ->constrained('item_warranties');
             $table->timestamps();
             $table->softDeletes();
         });

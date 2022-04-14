@@ -26,24 +26,15 @@ class StoreItemRequest extends FormRequest
     public function rules()
     {
         return [
-            'item_section_id' => 'required|integer',
+            'id' => 'nullable|integer',
+            'item_section_id' => 'nullable|integer',
             'name' => 'required|string',
-            'item_category_id' => 'required|integer',
-            'price' => 'required|decimal',
-            'item_condition_id' => 'required|integer',
-            'item_warranty_id' => 'required|integer',
-            'description' => 'required|text',
+            'item_category_id' => 'nullable|integer',
+            'price' => 'nullable|numeric',
+            'item_condition_id' => 'nullable|integer',
+            'item_warranty_id' => 'nullable|integer',
+            'description' => 'nullable|string',
             'is_draft' => 'required|boolean',
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'item_section_id.required' => 'Item section is required',
-            'item_category_id.required' => 'Item category is required',
-            'item_condition_id.required' => 'Item condition is required',
-            'item_warranty_id.required' => 'Item warranty is required',
         ];
     }
 
