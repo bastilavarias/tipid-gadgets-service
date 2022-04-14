@@ -42,6 +42,7 @@ class ItemController extends Controller
             $foundItem = Item::where('id', $updatedItem)
                 ->get()
                 ->first();
+
             return customResponse()
                 ->data($foundItem)
                 ->message('You have successfully updated an item.')
@@ -72,6 +73,19 @@ class ItemController extends Controller
         return customResponse()
             ->data($foundItem)
             ->message('You have successfully posted an item.')
+            ->success()
+            ->generate();
+    }
+
+    public function getDrafts()
+    {
+        $items = Item::where([
+            'user_id' => Auth::id(),
+            'is_draft' => 1,
+        ])->get();
+        return customResponse()
+            ->data($items)
+            ->message('You have successfully get drafted posts.')
             ->success()
             ->generate();
     }

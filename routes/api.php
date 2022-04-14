@@ -36,4 +36,5 @@ Route::prefix('authentication')->group(function () {
 
 Route::prefix('item')->group(function () {
     Route::post('/', [ItemController::class, 'store'])->middleware('auth:api');
+    Route::get('/drafts', [ItemController::class, 'getDrafts'])->middleware('auth:api');
 });
