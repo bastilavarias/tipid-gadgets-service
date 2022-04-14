@@ -133,4 +133,17 @@ class ItemController extends Controller
             ->success()
             ->generate();
     }
+
+    public function deleteDraft($id)
+    {
+        $item = Item::where('id', $id)
+            ->get()
+            ->first();
+        $item->delete();
+        return customResponse()
+            ->data(null)
+            ->message('You have successfully deleted a drafted item.')
+            ->success()
+            ->generate();
+    }
 }
