@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->decimal('price', 9, 3)->nullable();
             $table->text('description')->nullable();
             $table->boolean('is_draft');
+            $table->foreignId('user_id')->constrained('users');
             $table
                 ->foreignId('item_section_id')
                 ->nullable()

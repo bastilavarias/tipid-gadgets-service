@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\item\StoreItemRequest;
 use App\Models\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ItemController extends Controller
@@ -53,6 +54,7 @@ class ItemController extends Controller
             'name' => $request->input('name'),
             'item_category_id' => $request->input('item_category_id'),
             'price' => $request->input('price'),
+            'user_id' => Auth::id(),
             'item_condition_id' => $request->input('item_condition_id'),
             'item_warranty_id' => $request->input('item_warranty_id'),
             'description' => $request->input('description'),

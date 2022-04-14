@@ -6,6 +6,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -40,6 +41,15 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e)
     {
+        if ($e instanceof RouteNotFoundException) {
+            return customResponse()
+                ->data([])
+                ->message('Unauthorized.')
+                ->slug('no_query_result')
+                ->failed(404)
+                ->generate();
+        }
+
         if ($e instanceof ModelNotFoundException) {
             return customResponse()
                 ->data([])
