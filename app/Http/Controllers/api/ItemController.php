@@ -146,4 +146,34 @@ class ItemController extends Controller
             ->success()
             ->generate();
     }
+
+    public function index(Request $request)
+    {
+        $sortBy = $request->sort_by ? $request->sort_by : 'created_at';
+        $orderBy = $request->order_by ? $request->order_by : 'desc';
+        $page = $request->page ? intval($request->page) : 1;
+        $perPage = $request->per_page ? intval($request->per_page) : 10;
+        $filterBy = $request->filter_by ? $request->filter_by : null;
+        $query = Item::query();
+        if (!empty($filterBy)) {
+            if ($filterBy == 'item_for_sale') {
+                $itemForSaleID = 1;
+                $query = $query->where('item_section_id', '=', $itemForSaleID);
+            } elseif ($filterBy == 'want_to_buy') {
+                $wantToBuyID = 2;
+                $query = $query->where('item_section_id', '=', $wantToBuyID);
+            }
+        }
+        $query
+            ->with(['user', 'itemCategory'])
+            ->where('is_draft', '=', 0)
+            ->orderBy($sortBy, $orderBy)
+            ->paginate($perPage, ['*'], 'page', $page);
+        $items = $query->get()->makeHidden(['description']);
+        return customResponse()
+            ->data($items)
+            ->message('You have successfully get item posts.')
+            ->success()
+            ->generate();
+    }
 }

@@ -41,4 +41,5 @@ Route::prefix('item')->group(function () {
     Route::delete('/drafts/{id}', [ItemController::class, 'deleteDraft'])->middleware(
         'auth:api'
     );
+    Route::get('/', [ItemController::class, 'index']);
 });
