@@ -176,4 +176,38 @@ class ItemController extends Controller
             ->success()
             ->generate();
     }
+
+    public function getImages($id)
+    {
+        $item = Item::where('id', $id)
+            ->get()
+            ->first();
+        if (empty($item)) {
+            return customResponse()
+                ->data(null)
+                ->message('Item not found.')
+                ->notFound()
+                ->generate();
+        }
+        $description = $item->description;
+        if (empty($description)) {
+            return customResponse()
+                ->data([])
+                ->message('You have successfully item images.')
+                ->success()
+                ->generate();
+        }
+        $images = $this->extractBase64Images($description);
+        return customResponse()
+            ->data($images)
+            ->message('You have successfully item images.')
+            ->success()
+            ->generate();
+    }
+
+    public function extractBase64Images($text)
+    {
+        $pattern = '/(data:image\/[^;]+;base64[^"]+)/i';
+        return preg_match($pattern, $text, $output) ? $output : [];
+    }
 }
