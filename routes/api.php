@@ -42,7 +42,5 @@ Route::prefix('item')->group(function () {
         'auth:api'
     );
     Route::get('/', [ItemController::class, 'index']);
-    Route::get('/{id}/images', [ItemController::class, 'getImages'])->middleware(
-        'auth:api'
-    );
+    Route::get('/{id}/images', [ItemController::class, 'getImages']);
 });

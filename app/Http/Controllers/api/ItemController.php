@@ -30,6 +30,7 @@ class ItemController extends Controller
             ]);
             $foundItem = Item::where('id', $updatedItem)
                 ->get()
+                ->makeHidden(['description'])
                 ->first();
             return customResponse()
                 ->data($foundItem)
@@ -53,6 +54,7 @@ class ItemController extends Controller
         ]);
         $foundItem = Item::where('id', $createdItem->id)
             ->get()
+            ->makeHidden(['description'])
             ->first();
         return customResponse()
             ->data($foundItem)
@@ -93,6 +95,7 @@ class ItemController extends Controller
             ]);
             $foundItem = Item::where('id', $createdItem)
                 ->get()
+                ->makeHidden(['description'])
                 ->first();
             return customResponse()
                 ->data($foundItem)
@@ -104,6 +107,7 @@ class ItemController extends Controller
         $itemID = $request->input('id');
         $foundItem = Item::where('id', $itemID)
             ->get()
+            ->makeHidden(['description'])
             ->first();
         if (!$foundItem->is_draft) {
             return customResponse()
@@ -126,6 +130,7 @@ class ItemController extends Controller
         ]);
         $foundItem = Item::where('id', $updatedItem)
             ->get()
+            ->makeHidden(['description'])
             ->first();
         return customResponse()
             ->data($foundItem)
@@ -190,6 +195,7 @@ class ItemController extends Controller
                 ->generate();
         }
         $description = $item->description;
+        info($description);
         if (empty($description)) {
             return customResponse()
                 ->data([])
@@ -207,7 +213,7 @@ class ItemController extends Controller
 
     public function extractBase64Images($text)
     {
-        $pattern = '/(data:image\/[^;]+;base64[^"]+)/i';
-        return preg_match($pattern, $text, $output) ? $output : [];
+        $pattern = '#data:image/(gif|png|jpeg);base64,([\w=+/]++)#';
+        return preg_match_all($pattern, $text, $output) ? $output[0] : [];
     }
 }
