@@ -195,7 +195,6 @@ class ItemController extends Controller
                 ->generate();
         }
         $description = $item->description;
-        info($description);
         if (empty($description)) {
             return customResponse()
                 ->data([])
@@ -215,5 +214,31 @@ class ItemController extends Controller
     {
         $pattern = '#data:image/(gif|png|jpeg);base64,([\w=+/]++)#';
         return preg_match_all($pattern, $text, $output) ? $output[0] : [];
+    }
+
+    public function show($slug)
+    {
+        $item = Item::with([
+            'user',
+            'itemSection',
+            'itemCategory',
+            'itemCondition',
+            'itemWarranty',
+        ])
+            ->where('slug', $slug)
+            ->get()
+            ->first();
+        if (empty($item)) {
+            return customResponse()
+                ->data(null)
+                ->message('Item not found.')
+                ->notFound()
+                ->generate();
+        }
+        return customResponse()
+            ->data($item)
+            ->message('You have successfully get item.')
+            ->success()
+            ->generate();
     }
 }
