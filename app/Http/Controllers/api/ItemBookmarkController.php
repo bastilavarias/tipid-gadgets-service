@@ -21,7 +21,7 @@ class ItemBookmarkController extends Controller
             $foundItemBookmark->delete();
             return customResponse()
                 ->data(null)
-                ->message('You have remove your bookmark in this item.')
+                ->message('You have removed your bookmark in this item.')
                 ->success()
                 ->generate();
         }
