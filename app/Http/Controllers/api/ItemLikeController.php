@@ -51,4 +51,16 @@ class ItemLikeController extends Controller
             ->success()
             ->generate();
     }
+
+    public function count($itemID)
+    {
+        $count = ItemLike::where([
+            'item_id' => $itemID,
+        ])->count();
+        return customResponse()
+            ->data($count)
+            ->message('You have successfully item likes count.')
+            ->success()
+            ->generate();
+    }
 }

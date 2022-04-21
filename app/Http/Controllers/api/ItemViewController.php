@@ -36,4 +36,16 @@ class ItemViewController extends Controller
             ->success()
             ->generate();
     }
+
+    public function count($itemID)
+    {
+        $count = ItemView::where([
+            'item_id' => $itemID,
+        ])->count();
+        return customResponse()
+            ->data($count)
+            ->message('You have successfully item views count.')
+            ->success()
+            ->generate();
+    }
 }
