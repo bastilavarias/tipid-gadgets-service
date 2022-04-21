@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\ItemBookmarkController;
 use App\Http\Controllers\api\ItemController;
+use App\Http\Controllers\api\ItemLikeController;
 use App\Http\Controllers\api\ItemViewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\ReferenceController;
@@ -47,8 +48,12 @@ Route::prefix('item')->group(function () {
     );
     Route::get('/bookmarks/check/{itemID}', [
         ItemBookmarkController::class,
-        'checkIfBookmark',
+        'check',
     ])->middleware('auth:api');
+    Route::post('/likes', [ItemLikeController::class, 'store'])->middleware('auth:api');
+    Route::get('/likes/check/{itemID}', [ItemLikeController::class, 'check'])->middleware(
+        'auth:api'
+    );
     Route::delete('/drafts/{id}', [ItemController::class, 'deleteDraft'])->middleware(
         'auth:api'
     );

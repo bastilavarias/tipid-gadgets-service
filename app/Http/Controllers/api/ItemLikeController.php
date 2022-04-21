@@ -3,53 +3,51 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
-use App\Models\ItemBookmark;
+use App\Models\ItemLike;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ItemBookmarkController extends Controller
+class ItemLikeController extends Controller
 {
     public function store(Request $request)
     {
-        $foundItemBookmark = ItemBookmark::where([
+        $foundItemLike = ItemLike::where([
             'item_id' => $request->input('item_id'),
             'user_id' => Auth::id(),
         ])
             ->get()
             ->first();
-        if (!empty($foundItemBookmark)) {
-            $foundItemBookmark->delete();
+        if (!empty($foundItemLike)) {
+            $foundItemLike->delete();
             return customResponse()
                 ->data(null)
-                ->message('You have removed your bookmark in this item.')
+                ->message('You have removed your like in this item.')
                 ->success()
                 ->generate();
         }
-        ItemBookmark::create([
+        ItemLike::create([
             'item_id' => $request->input('item_id'),
             'user_id' => Auth::id(),
         ]);
         return customResponse()
             ->data(null)
-            ->message('You have bookmarked this item.')
+            ->message('You liked this item.')
             ->success()
             ->generate();
     }
 
     public function check($itemID)
     {
-        $foundItemBookmark = ItemBookmark::where([
+        $foundItemLike = ItemLike::where([
             'item_id' => $itemID,
             'user_id' => Auth::id(),
         ])
             ->get()
             ->first();
-        $isBookmarked = !empty($foundItemBookmark);
+        $isLiked = !empty($foundItemLike);
         return customResponse()
-            ->data($isBookmarked)
-            ->message(
-                'You have successfully check if the user bookmarked this item post.'
-            )
+            ->data($isLiked)
+            ->message('You have successfully check if the user liked this item post.')
             ->success()
             ->generate();
     }
