@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\item\StoreDraftRequest;
 use App\Http\Requests\item\StoreItemRequest;
 use App\Models\Item;
+use App\Models\ItemDescription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -16,7 +17,10 @@ class ItemController extends Controller
     {
         if (!empty($request->input('id'))) {
             $itemID = $request->input('id');
-            $updatedItem = Item::where('id', $itemID)->update([
+            $foundItem = Item::where('id', $itemID)
+                ->get()
+                ->first();
+            Item::where('id', $itemID)->update([
                 'user_id' => Auth::id(),
                 'id' => $itemID,
                 'item_section_id' => $request->input('item_section_id'),
@@ -25,19 +29,21 @@ class ItemController extends Controller
                 'price' => $request->input('price'),
                 'item_condition_id' => $request->input('item_condition_id'),
                 'item_warranty_id' => $request->input('item_warranty_id'),
-                'description' => $request->input('description'),
                 'is_draft' => 0,
             ]);
-            $foundItem = Item::where('id', $updatedItem)
-                ->get()
-                ->makeHidden(['description'])
-                ->first();
+            ItemDescription::where('id', $foundItem->item_description_id)->update([
+                'content' => $request->input('description'),
+            ]);
             return customResponse()
                 ->data($foundItem)
                 ->message('You have successfully posted an item.')
                 ->success()
                 ->generate();
         }
+
+        $createdDescription = ItemDescription::create([
+            'content' => $request->input('description'),
+        ]);
         $createdItem = Item::create([
             'user_id' => Auth::id(),
             'item_section_id' => $request->input('item_section_id'),
@@ -46,7 +52,7 @@ class ItemController extends Controller
             'price' => $request->input('price'),
             'item_condition_id' => $request->input('item_condition_id'),
             'item_warranty_id' => $request->input('item_warranty_id'),
-            'description' => $request->input('description'),
+            'item_description_id' => $createdDescription->id,
             'is_draft' => 0,
         ]);
         Item::where('id', $createdItem->id)->update([
@@ -54,7 +60,6 @@ class ItemController extends Controller
         ]);
         $foundItem = Item::where('id', $createdItem->id)
             ->get()
-            ->makeHidden(['description'])
             ->first();
         return customResponse()
             ->data($foundItem)
@@ -65,10 +70,12 @@ class ItemController extends Controller
 
     public function getDrafts()
     {
-        $items = Item::where([
-            'user_id' => Auth::id(),
-            'is_draft' => 1,
-        ])->get();
+        $items = Item::with(['description'])
+            ->where([
+                'user_id' => Auth::id(),
+                'is_draft' => 1,
+            ])
+            ->get();
         return customResponse()
             ->data($items)
             ->message('You have successfully get drafted posts.')
@@ -79,6 +86,9 @@ class ItemController extends Controller
     public function storeDraft(StoreDraftRequest $request)
     {
         if (empty($request->input('id'))) {
+            $createdDescription = ItemDescription::create([
+                'content' => $request->input('description'),
+            ]);
             $createdItem = Item::create([
                 'user_id' => Auth::id(),
                 'item_section_id' => $request->input('item_section_id'),
@@ -87,7 +97,7 @@ class ItemController extends Controller
                 'price' => $request->input('price'),
                 'item_condition_id' => $request->input('item_condition_id'),
                 'item_warranty_id' => $request->input('item_warranty_id'),
-                'description' => $request->input('description'),
+                'item_description_id' => $createdDescription->id,
                 'is_draft' => 1,
             ]);
             Item::where('id', $createdItem->id)->update([
@@ -95,7 +105,6 @@ class ItemController extends Controller
             ]);
             $foundItem = Item::where('id', $createdItem)
                 ->get()
-                ->makeHidden(['description'])
                 ->first();
             return customResponse()
                 ->data($foundItem)
@@ -107,7 +116,6 @@ class ItemController extends Controller
         $itemID = $request->input('id');
         $foundItem = Item::where('id', $itemID)
             ->get()
-            ->makeHidden(['description'])
             ->first();
         if (!$foundItem->is_draft) {
             return customResponse()
@@ -116,7 +124,7 @@ class ItemController extends Controller
                 ->failed()
                 ->generate();
         }
-        $updatedItem = Item::where('id', $itemID)->update([
+        Item::where('id', $itemID)->update([
             'user_id' => Auth::id(),
             'id' => $itemID,
             'item_section_id' => $request->input('item_section_id'),
@@ -125,13 +133,11 @@ class ItemController extends Controller
             'price' => $request->input('price'),
             'item_condition_id' => $request->input('item_condition_id'),
             'item_warranty_id' => $request->input('item_warranty_id'),
-            'description' => $request->input('description'),
             'is_draft' => 1,
         ]);
-        $foundItem = Item::where('id', $updatedItem)
-            ->get()
-            ->makeHidden(['description'])
-            ->first();
+        ItemDescription::where('id', $foundItem->item_description_id)->update([
+            'content' => $request->input('description'),
+        ]);
         return customResponse()
             ->data($foundItem)
             ->message('You have successfully updated drafted item.')
@@ -174,7 +180,7 @@ class ItemController extends Controller
             ->where('is_draft', '=', 0)
             ->orderBy($sortBy, $orderBy)
             ->paginate($perPage, ['*'], 'page', $page);
-        $items = $query->get()->makeHidden(['description']);
+        $items = $query->get();
         return customResponse()
             ->data($items)
             ->message('You have successfully get item posts.')
@@ -184,7 +190,8 @@ class ItemController extends Controller
 
     public function getImages($id)
     {
-        $item = Item::where('id', $id)
+        $item = Item::with(['description'])
+            ->where('id', $id)
             ->get()
             ->first();
         if (empty($item)) {
@@ -194,15 +201,15 @@ class ItemController extends Controller
                 ->notFound()
                 ->generate();
         }
-        $description = $item->description;
-        if (empty($description)) {
+        $content = $item->description->content;
+        if (empty($content)) {
             return customResponse()
                 ->data([])
                 ->message('You have successfully item images.')
                 ->success()
                 ->generate();
         }
-        $images = $this->extractBase64Images($description);
+        $images = $this->extractBase64Images($content);
         return customResponse()
             ->data($images)
             ->message('You have successfully item images.')
@@ -219,6 +226,7 @@ class ItemController extends Controller
     public function show($slug)
     {
         $item = Item::with([
+            'description',
             'user',
             'itemSection',
             'itemCategory',

@@ -11,6 +11,11 @@ class Item extends Model
 
     protected $guarded = [];
 
+    public function description()
+    {
+        return $this->hasOne(ItemDescription::class, 'id', 'item_description_id');
+    }
+
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');
