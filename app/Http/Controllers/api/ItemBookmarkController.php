@@ -35,4 +35,22 @@ class ItemBookmarkController extends Controller
             ->success()
             ->generate();
     }
+
+    public function checkIfBookmark($itemID)
+    {
+        $foundItemBookmark = ItemBookmark::where([
+            'item_id' => $itemID,
+            'user_id' => Auth::id(),
+        ])
+            ->get()
+            ->first();
+        $isBookmarked = !empty($foundItemBookmark);
+        return customResponse()
+            ->data($isBookmarked)
+            ->message(
+                'You have success fully check if the user bookmarked this item post.'
+            )
+            ->success()
+            ->generate();
+    }
 }

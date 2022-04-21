@@ -45,6 +45,10 @@ Route::prefix('item')->group(function () {
     Route::post('/bookmarks', [ItemBookmarkController::class, 'store'])->middleware(
         'auth:api'
     );
+    Route::get('/bookmarks/check/{itemID}', [
+        ItemBookmarkController::class,
+        'checkIfBookmark',
+    ])->middleware('auth:api');
     Route::delete('/drafts/{id}', [ItemController::class, 'deleteDraft'])->middleware(
         'auth:api'
     );
