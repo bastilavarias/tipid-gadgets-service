@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\ItemController;
+use App\Http\Controllers\api\ItemViewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\ReferenceController;
@@ -40,6 +41,7 @@ Route::prefix('item')->group(function () {
     Route::get('/drafts', [ItemController::class, 'getDrafts'])->middleware('auth:api');
     Route::get('/{slug}', [ItemController::class, 'show']);
     Route::post('/drafts', [ItemController::class, 'storeDraft'])->middleware('auth:api');
+    Route::post('/view', [ItemViewController::class, 'store']);
     Route::delete('/drafts/{id}', [ItemController::class, 'deleteDraft'])->middleware(
         'auth:api'
     );
