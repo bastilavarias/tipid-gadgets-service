@@ -4,6 +4,7 @@ use App\Http\Controllers\api\ItemBookmarkController;
 use App\Http\Controllers\api\ItemController;
 use App\Http\Controllers\api\ItemLikeController;
 use App\Http\Controllers\api\ItemViewController;
+use App\Http\Controllers\api\InsightController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\ReferenceController;
 use App\Http\Controllers\api\AuthenticationController;
@@ -61,3 +62,9 @@ Route::prefix('item')->group(function () {
     );
     Route::get('/{id}/images', [ItemController::class, 'getImages']);
 });
+
+Route::prefix('insight')
+    ->middleware('auth:api')
+    ->group(function () {
+        Route::get('/items/{itemID}', [InsightController::class, 'showItem']);
+    });

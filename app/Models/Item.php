@@ -40,4 +40,19 @@ class Item extends Model
     {
         return $this->hasOne(ItemWarranty::class, 'id', 'item_warranty_id');
     }
+
+    public function views()
+    {
+        return $this->hasMany(ItemView::class, 'item_id', 'id');
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(ItemLike::class, 'item_id', 'id');
+    }
+
+    public function bookmarks()
+    {
+        return $this->hasMany(ItemBookmark::class, 'item_id', 'id');
+    }
 }
