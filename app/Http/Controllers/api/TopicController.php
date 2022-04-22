@@ -60,4 +60,19 @@ class TopicController extends Controller
             ->success()
             ->generate();
     }
+
+    public function getDrafts()
+    {
+        $topics = Topic::with(['description'])
+            ->where([
+                'user_id' => Auth::id(),
+                'is_draft' => 1,
+            ])
+            ->get();
+        return customResponse()
+            ->data($topics)
+            ->message('You have successfully get drafted topics.')
+            ->success()
+            ->generate();
+    }
 }

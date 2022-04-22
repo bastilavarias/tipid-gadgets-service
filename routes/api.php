@@ -72,6 +72,7 @@ Route::prefix('insight')
     });
 
 Route::prefix('topic')->group(function () {
+    Route::get('/drafts', [TopicController::class, 'getDrafts'])->middleware('auth:api');
     Route::post('/drafts', [TopicController::class, 'storeDraft'])->middleware(
         'auth:api'
     );
