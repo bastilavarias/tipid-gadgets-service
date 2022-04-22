@@ -8,6 +8,7 @@ use App\Models\ItemCondition;
 use App\Models\ItemSection;
 use App\Models\ItemWarranty;
 use App\Models\Location;
+use App\Models\TopicSection;
 use Illuminate\Http\Request;
 
 class ReferenceController extends Controller
@@ -58,6 +59,16 @@ class ReferenceController extends Controller
         return customResponse()
             ->data($warranties)
             ->message('Get item warranties successful.')
+            ->success()
+            ->generate();
+    }
+
+    public function topicSections()
+    {
+        $sections = TopicSection::all();
+        return customResponse()
+            ->data($sections)
+            ->message('Get topic sections successful.')
             ->success()
             ->generate();
     }

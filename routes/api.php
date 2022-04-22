@@ -8,6 +8,7 @@ use App\Http\Controllers\api\InsightController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\ReferenceController;
 use App\Http\Controllers\api\AuthenticationController;
+use App\Http\Controllers\api\TopicController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,7 @@ Route::prefix('reference')->group(function () {
     Route::get('/item/categories', [ReferenceController::class, 'itemCategories']);
     Route::get('/item/conditions', [ReferenceController::class, 'itemConditions']);
     Route::get('/item/warranties', [ReferenceController::class, 'itemWarranties']);
+    Route::get('/topic/sections', [ReferenceController::class, 'topicSections']);
 });
 
 Route::prefix('authentication')->group(function () {
@@ -68,3 +70,9 @@ Route::prefix('insight')
     ->group(function () {
         Route::get('/items/{itemID}', [InsightController::class, 'showItem']);
     });
+
+Route::prefix('topic')->group(function () {
+    Route::post('/drafts', [TopicController::class, 'storeDraft'])->middleware(
+        'auth:api'
+    );
+});
