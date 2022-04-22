@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\topic\StoreTopicDraftRequest;
+use App\Http\Requests\topic\StoreTopicRequest;
 use App\Models\Topic;
 use App\Models\TopicDescription;
 use Illuminate\Http\Request;
@@ -36,8 +37,8 @@ class TopicController extends Controller
                 ->generate();
         }
 
-        $itemID = $request->input('id');
-        $foundTopic = Topic::find($itemID);
+        $topicID = $request->input('id');
+        $foundTopic = Topic::find($topicID);
         if (!$foundTopic->is_draft) {
             return customResponse()
                 ->data(null)
@@ -72,6 +73,57 @@ class TopicController extends Controller
         return customResponse()
             ->data($topics)
             ->message('You have successfully get drafted topics.')
+            ->success()
+            ->generate();
+    }
+
+    public function deleteDraft($topicID)
+    {
+        $topic = Topic::find($topicID)->delete();
+        return customResponse()
+            ->data($topic)
+            ->message('You have successfully deleted a drafted topic.')
+            ->success()
+            ->generate();
+    }
+
+    public function store(StoreTopicRequest $request)
+    {
+        $topicID = $request->input('id');
+        if (!empty($topicID)) {
+            $topic = Topic::find($topicID);
+            $topic = tap($topic)->update([
+                'user_id' => Auth::id(),
+                'id' => $topicID,
+                'topic_section_id' => $request->input('topic_section_id'),
+                'name' => $request->input('name'),
+                'is_draft' => 0,
+            ]);
+            $topic->description->update([
+                'content' => $request->input('description'),
+            ]);
+            return customResponse()
+                ->data($topic)
+                ->message('You have successfully posted a topic.')
+                ->success()
+                ->generate();
+        }
+        $description = TopicDescription::create([
+            'content' => $request->input('description'),
+        ]);
+        $topic = Topic::create([
+            'user_id' => Auth::id(),
+            'topic_section_id' => $request->input('topic_section_id'),
+            'name' => $request->input('name'),
+            'topic_description_id' => $description->id,
+            'is_draft' => 0,
+        ]);
+        $topic = tap($topic)->update([
+            'slug' => Str::of($topic->name)->snake() . '_' . $topic->id,
+        ]);
+        return customResponse()
+            ->data($topic)
+            ->message('You have successfully posted a topic.')
             ->success()
             ->generate();
     }

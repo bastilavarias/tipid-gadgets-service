@@ -72,8 +72,13 @@ Route::prefix('insight')
     });
 
 Route::prefix('topic')->group(function () {
+    Route::post('/', [TopicController::class, 'store'])->middleware('auth:api');
     Route::get('/drafts', [TopicController::class, 'getDrafts'])->middleware('auth:api');
     Route::post('/drafts', [TopicController::class, 'storeDraft'])->middleware(
         'auth:api'
     );
+    Route::delete('/drafts/{itemID}', [
+        TopicController::class,
+        'deleteDraft',
+    ])->middleware('auth:api');
 });
