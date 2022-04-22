@@ -15,7 +15,8 @@ class TopicController extends Controller
 {
     public function storeDraft(StoreTopicDraftRequest $request)
     {
-        if (empty($request->input('id'))) {
+        $topicID = $request->input('id');
+        if (empty($topicID)) {
             $description = TopicDescription::create([
                 'content' => $request->input('description'),
             ]);
@@ -36,27 +37,25 @@ class TopicController extends Controller
                 ->success()
                 ->generate();
         }
-
-        $topicID = $request->input('id');
-        $foundTopic = Topic::find($topicID);
-        if (!$foundTopic->is_draft) {
+        $topic = Topic::find($topicID);
+        if (!$topic->is_draft) {
             return customResponse()
                 ->data(null)
                 ->message('You cant save a draft topic if already posted.')
                 ->failed()
                 ->generate();
         }
-        $foundTopic = tap($foundTopic)->update([
+        $topic = tap($topic)->update([
             'user_id' => Auth::id(),
             'topic_section_id' => $request->input('topic_section_id'),
             'name' => $request->input('name'),
             'is_draft' => 1,
         ]);
-        $foundTopic->description->update([
+        $topic->description->update([
             'content' => $request->input('description'),
         ]);
         return customResponse()
-            ->data($foundTopic)
+            ->data($topic)
             ->message('You have successfully updated drafted topic.')
             ->success()
             ->generate();
