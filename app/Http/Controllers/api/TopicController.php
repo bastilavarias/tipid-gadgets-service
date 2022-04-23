@@ -126,4 +126,24 @@ class TopicController extends Controller
             ->success()
             ->generate();
     }
+
+    public function index(Request $request)
+    {
+        $sortBy = $request->sort_by ? $request->sort_by : 'created_at';
+        $orderBy = $request->order_by ? $request->order_by : 'desc';
+        $page = $request->page ? intval($request->page) : 1;
+        $perPage = $request->per_page ? intval($request->per_page) : 10;
+        $query = Topic::query();
+        $query
+            ->with(['user', 'section'])
+            ->where('is_draft', '=', 0)
+            ->orderBy($sortBy, $orderBy)
+            ->paginate($perPage, ['*'], 'page', $page);
+        $topics = $query->get();
+        return customResponse()
+            ->data($topics)
+            ->message('You have successfully get topic posts.')
+            ->success()
+            ->generate();
+    }
 }

@@ -16,4 +16,14 @@ class Topic extends Model
     {
         return $this->hasOne(TopicDescription::class, 'id', 'topic_description_id');
     }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function section()
+    {
+        return $this->hasOne(TopicSection::class, 'id', 'topic_section_id');
+    }
 }
