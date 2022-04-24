@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ItemConditionSeeder::class,
             ItemWarrantySeeder::class,
             TopicSectionSeeder::class,
+            SearchTypeSeeder::class,
         ]);
     }
 }

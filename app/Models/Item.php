@@ -22,22 +22,22 @@ class Item extends Model
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
-    public function itemSection()
+    public function section()
     {
         return $this->hasOne(ItemSection::class, 'id', 'item_section_id');
     }
 
-    public function itemCategory()
+    public function category()
     {
         return $this->hasOne(ItemCategory::class, 'id', 'item_category_id');
     }
 
-    public function itemCondition()
+    public function condition()
     {
         return $this->hasOne(ItemCondition::class, 'id', 'item_condition_id');
     }
 
-    public function itemWarranty()
+    public function warranty()
     {
         return $this->hasOne(ItemWarranty::class, 'id', 'item_warranty_id');
     }

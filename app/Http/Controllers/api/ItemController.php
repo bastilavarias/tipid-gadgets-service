@@ -176,7 +176,7 @@ class ItemController extends Controller
             }
         }
         $query
-            ->with(['user', 'itemCategory'])
+            ->with(['user', 'category'])
             ->where('is_draft', '=', 0)
             ->orderBy($sortBy, $orderBy)
             ->paginate($perPage, ['*'], 'page', $page);
@@ -228,10 +228,10 @@ class ItemController extends Controller
         $item = Item::with([
             'description',
             'user',
-            'itemSection',
-            'itemCategory',
-            'itemCondition',
-            'itemWarranty',
+            'section',
+            'category',
+            'condition',
+            'warranty',
         ])
             ->where('slug', $slug)
             ->get()

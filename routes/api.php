@@ -23,6 +23,7 @@ use App\Http\Controllers\api\TopicController;
 
 Route::prefix('reference')->group(function () {
     Route::get('/locations', [ReferenceController::class, 'locations']);
+    Route::get('/search-types', [ReferenceController::class, 'searchTypes']);
     Route::get('/item/sections', [ReferenceController::class, 'itemSections']);
     Route::get('/item/categories', [ReferenceController::class, 'itemCategories']);
     Route::get('/item/conditions', [ReferenceController::class, 'itemConditions']);

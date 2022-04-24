@@ -8,6 +8,7 @@ use App\Models\ItemCondition;
 use App\Models\ItemSection;
 use App\Models\ItemWarranty;
 use App\Models\Location;
+use App\Models\SearchType;
 use App\Models\TopicSection;
 use Illuminate\Http\Request;
 
@@ -15,9 +16,9 @@ class ReferenceController extends Controller
 {
     public function locations()
     {
-        $locations = Location::all();
+        $data = Location::all();
         return customResponse()
-            ->data($locations)
+            ->data($data)
             ->message('Get locations successful.')
             ->success()
             ->generate();
@@ -25,9 +26,9 @@ class ReferenceController extends Controller
 
     public function itemSections()
     {
-        $sections = ItemSection::all();
+        $data = ItemSection::all();
         return customResponse()
-            ->data($sections)
+            ->data($data)
             ->message('Get item sections successful.')
             ->success()
             ->generate();
@@ -35,9 +36,9 @@ class ReferenceController extends Controller
 
     public function itemCategories()
     {
-        $categories = ItemCategory::all();
+        $data = ItemCategory::all();
         return customResponse()
-            ->data($categories)
+            ->data($data)
             ->message('Get item categories successful.')
             ->success()
             ->generate();
@@ -45,9 +46,9 @@ class ReferenceController extends Controller
 
     public function itemConditions()
     {
-        $conditions = ItemCondition::all();
+        $data = ItemCondition::all();
         return customResponse()
-            ->data($conditions)
+            ->data($data)
             ->message('Get item conditions successful.')
             ->success()
             ->generate();
@@ -55,9 +56,9 @@ class ReferenceController extends Controller
 
     public function itemWarranties()
     {
-        $warranties = ItemWarranty::all();
+        $data = ItemWarranty::all();
         return customResponse()
-            ->data($warranties)
+            ->data($data)
             ->message('Get item warranties successful.')
             ->success()
             ->generate();
@@ -65,10 +66,20 @@ class ReferenceController extends Controller
 
     public function topicSections()
     {
-        $sections = TopicSection::all();
+        $data = TopicSection::all();
         return customResponse()
-            ->data($sections)
+            ->data($data)
             ->message('Get topic sections successful.')
+            ->success()
+            ->generate();
+    }
+
+    public function searchTypes()
+    {
+        $data = SearchType::all();
+        return customResponse()
+            ->data($data)
+            ->message('Get search types successful.')
             ->success()
             ->generate();
     }
