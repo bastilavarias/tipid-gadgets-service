@@ -5,6 +5,7 @@ use App\Http\Controllers\api\ItemController;
 use App\Http\Controllers\api\ItemLikeController;
 use App\Http\Controllers\api\ItemViewController;
 use App\Http\Controllers\api\InsightController;
+use App\Http\Controllers\api\TopicViewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\ReferenceController;
 use App\Http\Controllers\api\AuthenticationController;
@@ -76,7 +77,10 @@ Route::prefix('topic')->group(function () {
     Route::get('/', [TopicController::class, 'index']);
     Route::post('/', [TopicController::class, 'store'])->middleware('auth:api');
     Route::post('/', [TopicController::class, 'store'])->middleware('auth:api');
+    Route::get('/{slug}', [TopicController::class, 'show']);
     Route::get('/drafts', [TopicController::class, 'getDrafts'])->middleware('auth:api');
+    Route::post('/views', [TopicViewController::class, 'store']);
+    Route::get('/views/count/{itemID}', [TopicViewController::class, 'count']);
     Route::post('/drafts', [TopicController::class, 'storeDraft'])->middleware(
         'auth:api'
     );

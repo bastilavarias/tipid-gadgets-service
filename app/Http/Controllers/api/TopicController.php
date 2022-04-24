@@ -146,4 +146,24 @@ class TopicController extends Controller
             ->success()
             ->generate();
     }
+
+    public function show($slug)
+    {
+        $topic = Topic::with(['description', 'user', 'section'])
+            ->where('slug', $slug)
+            ->get()
+            ->first();
+        if (empty($topic)) {
+            return customResponse()
+                ->data(null)
+                ->message('Topic not found.')
+                ->notFound()
+                ->generate();
+        }
+        return customResponse()
+            ->data($topic)
+            ->message('You have successfully get topic.')
+            ->success()
+            ->generate();
+    }
 }
