@@ -72,7 +72,8 @@ Route::prefix('item')->group(function () {
 Route::prefix('insight')
     ->middleware('auth:api')
     ->group(function () {
-        Route::get('/items/{itemID}', [InsightController::class, 'showItem']);
+        Route::get('/items/{id}', [InsightController::class, 'showItem']);
+        Route::get('/topics/{id}', [InsightController::class, 'showTopic']);
     });
 
 Route::prefix('topic')->group(function () {
