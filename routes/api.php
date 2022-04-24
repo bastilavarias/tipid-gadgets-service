@@ -5,6 +5,8 @@ use App\Http\Controllers\api\ItemController;
 use App\Http\Controllers\api\ItemLikeController;
 use App\Http\Controllers\api\ItemViewController;
 use App\Http\Controllers\api\InsightController;
+use App\Http\Controllers\api\TopicBookmarkController;
+use App\Http\Controllers\api\TopicLikeController;
 use App\Http\Controllers\api\TopicViewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\ReferenceController;
@@ -76,15 +78,27 @@ Route::prefix('insight')
 Route::prefix('topic')->group(function () {
     Route::get('/', [TopicController::class, 'index']);
     Route::post('/', [TopicController::class, 'store'])->middleware('auth:api');
-    Route::post('/', [TopicController::class, 'store'])->middleware('auth:api');
-    Route::get('/{slug}', [TopicController::class, 'show']);
     Route::get('/drafts', [TopicController::class, 'getDrafts'])->middleware('auth:api');
-    Route::post('/views', [TopicViewController::class, 'store']);
-    Route::get('/views/count/{itemID}', [TopicViewController::class, 'count']);
+    Route::get('/{slug}', [TopicController::class, 'show']);
     Route::post('/drafts', [TopicController::class, 'storeDraft'])->middleware(
         'auth:api'
     );
-    Route::delete('/drafts/{itemID}', [
+    Route::post('/views', [TopicViewController::class, 'store']);
+    Route::get('/views/count/{topicID}', [TopicViewController::class, 'count']);
+    Route::post('/bookmarks', [TopicBookmarkController::class, 'store'])->middleware(
+        'auth:api'
+    );
+    Route::get('/bookmarks/check/{topicID}', [
+        TopicBookmarkController::class,
+        'check',
+    ])->middleware('auth:api');
+    Route::post('/likes', [TopicLikeController::class, 'store'])->middleware('auth:api');
+    Route::get('/likes/check/{topicID}', [
+        TopicLikeController::class,
+        'check',
+    ])->middleware('auth:api');
+    Route::get('/likes/count/{topicID}', [TopicLikeController::class, 'count']);
+    Route::delete('/drafts/{topicID}', [
         TopicController::class,
         'deleteDraft',
     ])->middleware('auth:api');
