@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Models\ItemBookmark;
 use App\Models\ItemLike;
 use App\Models\ItemView;
+use App\Models\Topic;
 use Illuminate\Http\Request;
 
 class InsightController extends Controller
@@ -40,7 +41,7 @@ class InsightController extends Controller
 
     public function showTopic($id)
     {
-        $topic = Item::find($id);
+        $topic = Topic::find($id);
         if (!empty($topic)) {
             $insight = [
                 'reach' => $topic->views->count(),

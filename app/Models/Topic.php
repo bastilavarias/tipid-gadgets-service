@@ -26,4 +26,19 @@ class Topic extends Model
     {
         return $this->hasOne(TopicSection::class, 'id', 'topic_section_id');
     }
+
+    public function views()
+    {
+        return $this->hasMany(TopicView::class, 'topic_id', 'id');
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(TopicLike::class, 'topic_id', 'id');
+    }
+
+    public function bookmarks()
+    {
+        return $this->hasMany(TopicBookmark::class, 'topic_id', 'id');
+    }
 }
