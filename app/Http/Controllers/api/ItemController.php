@@ -165,6 +165,12 @@ class ItemController extends Controller
         $page = $request->page ? intval($request->page) : 1;
         $perPage = $request->per_page ? intval($request->per_page) : 10;
         $filterBy = $request->filter_by ? $request->filter_by : null;
+        $search = $request->search ? $request->search : null;
+        $categoryID = $request->category_id ? $request->category_id : null;
+        $conditionID = $request->condition_id ? $request->condition_id : null;
+        $warrantyID = $request->warranty_id ? $request->warranty_id : null;
+        $minPrice = $request->min_price ? $request->min_price : null;
+        $maxPrice = $request->max_price ? $request->max_price : null;
         $query = Item::query();
         if (!empty($filterBy)) {
             if ($filterBy == 'item_for_sale') {
@@ -173,6 +179,27 @@ class ItemController extends Controller
             } elseif ($filterBy == 'want_to_buy') {
                 $wantToBuyID = 2;
                 $query = $query->where('item_section_id', '=', $wantToBuyID);
+            }
+        }
+        if (!empty($search)) {
+            $query = $query->where('name', 'LIKE', '%' . $search . '%');
+        }
+        if (!empty($categoryID)) {
+            $query = $query->where('item_category_id', '=', $categoryID);
+        }
+        if (!empty($conditionID)) {
+            $query = $query->where('item_condition_id', '=', $conditionID);
+        }
+        if (!empty($warrantyID)) {
+            $query = $query->where('item_warranty_id', '=', $warrantyID);
+        }
+        if (!empty($minPrice) || !empty($maxPrice)) {
+            if (!empty($minPrice) && !empty($maxPrice)) {
+                $query = $query->whereBetween('price', [$minPrice, $maxPrice]);
+            } elseif (!empty($minPrice) && empty($maxPrice)) {
+                $query = $query->where('price', '>=', $minPrice);
+            } elseif (empty($minPrice) && !empty($maxPrice)) {
+                $query = $query->where('price', '<=', $maxPrice);
             }
         }
         $query
