@@ -133,7 +133,15 @@ class TopicController extends Controller
         $orderBy = $request->order_by ? $request->order_by : 'desc';
         $page = $request->page ? intval($request->page) : 1;
         $perPage = $request->per_page ? intval($request->per_page) : 10;
+        $search = $request->search ? $request->search : null;
+        $sectionID = $request->section_id ? $request->section_id : null;
         $query = Topic::query();
+        if (!empty($search)) {
+            $query = $query->where('name', 'LIKE', '%' . $search . '%');
+        }
+        if (!empty($sectionID)) {
+            $query = $query->where('topic_section_id', '=', $sectionID);
+        }
         $query
             ->with(['user', 'section'])
             ->where('is_draft', '=', 0)
