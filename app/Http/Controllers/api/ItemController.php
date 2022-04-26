@@ -169,8 +169,8 @@ class ItemController extends Controller
         $categoryID = $request->category_id ? $request->category_id : null;
         $conditionID = $request->condition_id ? $request->condition_id : null;
         $warrantyID = $request->warranty_id ? $request->warranty_id : null;
-        $minPrice = $request->min_price ? $request->min_price : null;
-        $maxPrice = $request->max_price ? $request->max_price : null;
+        $minimumPrice = $request->minimum_price ? $request->minimum_price : null;
+        $maximumPrice = $request->maximum_price ? $request->maximum_price : null;
         $query = Item::query();
         if (!empty($filterBy)) {
             if ($filterBy == 'items_for_sale') {
@@ -193,13 +193,14 @@ class ItemController extends Controller
         if (!empty($warrantyID)) {
             $query = $query->where('item_warranty_id', '=', $warrantyID);
         }
-        if (!empty($minPrice) || !empty($maxPrice)) {
-            if (!empty($minPrice) && !empty($maxPrice)) {
-                $query = $query->whereBetween('price', [$minPrice, $maxPrice]);
-            } elseif (!empty($minPrice) && empty($maxPrice)) {
-                $query = $query->where('price', '>=', $minPrice);
-            } elseif (empty($minPrice) && !empty($maxPrice)) {
-                $query = $query->where('price', '<=', $maxPrice);
+        if (!empty($minimumPrice) || !empty($maximumPrice)) {
+            if (!empty($minimumPrice) && !empty($maximumPrice)) {
+                $query = $query->whereBetween('price', [$minimumPrice, $maximumPrice]);
+            } elseif (!empty($minimumPrice) && empty($maximumPrice)) {
+                info($minimumPrice);
+                $query = $query->where('price', '>=', $minimumPrice);
+            } elseif (empty($minimumPrice) && !empty($maximumPrice)) {
+                $query = $query->where('price', '<=', $maximumPrice);
             }
         }
         $query
