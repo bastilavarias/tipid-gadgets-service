@@ -8,6 +8,7 @@ use App\Http\Controllers\api\InsightController;
 use App\Http\Controllers\api\TopicBookmarkController;
 use App\Http\Controllers\api\TopicLikeController;
 use App\Http\Controllers\api\TopicViewController;
+use App\Http\Controllers\api\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\ReferenceController;
 use App\Http\Controllers\api\AuthenticationController;
@@ -103,4 +104,8 @@ Route::prefix('topic')->group(function () {
         TopicController::class,
         'deleteDraft',
     ])->middleware('auth:api');
+});
+
+Route::prefix('user')->group(function () {
+    Route::get('/', [UserController::class, 'index']);
 });
