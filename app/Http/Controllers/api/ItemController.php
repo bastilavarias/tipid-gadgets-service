@@ -173,10 +173,10 @@ class ItemController extends Controller
         $maxPrice = $request->max_price ? $request->max_price : null;
         $query = Item::query();
         if (!empty($filterBy)) {
-            if ($filterBy == 'item_for_sale') {
+            if ($filterBy == 'items_for_sale') {
                 $itemForSaleID = 1;
                 $query = $query->where('item_section_id', '=', $itemForSaleID);
-            } elseif ($filterBy == 'want_to_buy') {
+            } elseif ($filterBy == 'want_to_buys') {
                 $wantToBuyID = 2;
                 $query = $query->where('item_section_id', '=', $wantToBuyID);
             }
