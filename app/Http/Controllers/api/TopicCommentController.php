@@ -23,6 +23,7 @@ class TopicCommentController extends Controller
                 'comment_id' => $comment->id,
             ]);
         }
+        $comment = TopicComment::with(['topic', 'replyTo'])->find($comment->id);
         return customResponse()
             ->data($comment)
             ->message('You have successfully posted a comment.')
@@ -43,6 +44,17 @@ class TopicCommentController extends Controller
         return customResponse()
             ->data($comments)
             ->message('You have successfully get topic comments.')
+            ->success()
+            ->generate();
+    }
+    public function count($topicID)
+    {
+        $count = TopicComment::where([
+            'topic_id' => $topicID,
+        ])->count();
+        return customResponse()
+            ->data($count)
+            ->message('You have successfully topic comments count.')
             ->success()
             ->generate();
     }

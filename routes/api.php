@@ -83,7 +83,8 @@ Route::prefix('topic')->group(function () {
     Route::post('/', [TopicController::class, 'store'])->middleware('auth:api');
     Route::get('/drafts', [TopicController::class, 'getDrafts'])->middleware('auth:api');
     Route::get('/{slug}', [TopicController::class, 'show']);
-    Route::get('/{topicID}/comments', [TopicCommentController::class, 'index']);
+    Route::get('/comments/{topicID}', [TopicCommentController::class, 'index']);
+    Route::get('/comments/count/{topicID}', [TopicCommentController::class, 'count']);
     Route::post('/drafts', [TopicController::class, 'storeDraft'])->middleware(
         'auth:api'
     );
