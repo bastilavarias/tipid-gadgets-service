@@ -83,11 +83,12 @@ Route::prefix('topic')->group(function () {
     Route::post('/', [TopicController::class, 'store'])->middleware('auth:api');
     Route::get('/drafts', [TopicController::class, 'getDrafts'])->middleware('auth:api');
     Route::get('/{slug}', [TopicController::class, 'show']);
+    Route::get('/{topicID}/comments', [TopicCommentController::class, 'index']);
     Route::post('/drafts', [TopicController::class, 'storeDraft'])->middleware(
         'auth:api'
     );
     Route::post('/views', [TopicViewController::class, 'store']);
-    Route::post('/comment', [TopicCommentController::class, 'store'])->middleware(
+    Route::post('/comments', [TopicCommentController::class, 'store'])->middleware(
         'auth:api'
     );
     Route::get('/views/count/{topicID}', [TopicViewController::class, 'count']);
