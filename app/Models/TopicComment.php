@@ -24,6 +24,6 @@ class TopicComment extends Model
 
     public function replyTo()
     {
-        return $this->belongsTo(TopicCommentReply::class, 'id', 'comment_id');
+        return $this->belongsTo(TopicCommentReply::class, 'id', 'reply_id');
     }
 }

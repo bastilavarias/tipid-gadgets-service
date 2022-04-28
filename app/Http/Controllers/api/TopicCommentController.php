@@ -20,7 +20,8 @@ class TopicCommentController extends Controller
         ]);
         if (!empty($request->comment_id)) {
             TopicCommentReply::create([
-                'comment_id' => $comment->id,
+                'comment_id' => $request->comment_id,
+                'reply_id' => $comment->id,
             ]);
         }
         $comment = TopicComment::with(['topic', 'replyTo'])->find($comment->id);
