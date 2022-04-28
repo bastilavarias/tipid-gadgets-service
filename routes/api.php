@@ -6,6 +6,7 @@ use App\Http\Controllers\api\ItemLikeController;
 use App\Http\Controllers\api\ItemViewController;
 use App\Http\Controllers\api\InsightController;
 use App\Http\Controllers\api\TopicBookmarkController;
+use App\Http\Controllers\api\TopicCommentController;
 use App\Http\Controllers\api\TopicLikeController;
 use App\Http\Controllers\api\TopicViewController;
 use App\Http\Controllers\api\UserController;
@@ -86,6 +87,9 @@ Route::prefix('topic')->group(function () {
         'auth:api'
     );
     Route::post('/views', [TopicViewController::class, 'store']);
+    Route::post('/comment', [TopicCommentController::class, 'store'])->middleware(
+        'auth:api'
+    );
     Route::get('/views/count/{topicID}', [TopicViewController::class, 'count']);
     Route::post('/bookmarks', [TopicBookmarkController::class, 'store'])->middleware(
         'auth:api'
