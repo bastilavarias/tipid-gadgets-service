@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\user\UpdateRequest;
+use App\Http\Requests\user\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -31,6 +34,27 @@ class UserController extends Controller
         return customResponse()
             ->data($topics)
             ->message('You have successfully get users.')
+            ->success()
+            ->generate();
+    }
+
+    public function update(UpdateUserRequest $request)
+    {
+        $user = User::find(Auth::id());
+        if (empty($user)) {
+            return customResponse()
+                ->data(null)
+                ->message('User not found.')
+                ->notFound()
+                ->generate();
+        }
+        $user = tap($user)->update([
+            'name' => $request->input('name'),
+            'location' => $request->input('location'),
+        ]);
+        return customResponse()
+            ->data($user)
+            ->message('User has been updated.')
             ->success()
             ->generate();
     }
