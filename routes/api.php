@@ -53,6 +53,7 @@ Route::prefix('item')->group(function () {
     Route::get('/', [ItemController::class, 'index']);
     Route::post('/', [ItemController::class, 'store'])->middleware('auth:api');
     Route::get('/drafts', [ItemController::class, 'getDrafts'])->middleware('auth:api');
+    Route::get('/bookmarks', [ItemBookmarkController::class, 'index']);
     Route::get('/{slug}', [ItemController::class, 'show']);
     Route::post('/drafts', [ItemController::class, 'storeDraft'])->middleware('auth:api');
     Route::post('/views', [ItemViewController::class, 'store']);
@@ -86,6 +87,7 @@ Route::prefix('topic')->group(function () {
     Route::get('/', [TopicController::class, 'index']);
     Route::post('/', [TopicController::class, 'store'])->middleware('auth:api');
     Route::get('/drafts', [TopicController::class, 'getDrafts'])->middleware('auth:api');
+    Route::get('/bookmarks', [TopicBookmarkController::class, 'index']);
     Route::get('/{slug}', [TopicController::class, 'show']);
     Route::get('/comments/{topicID}', [TopicCommentController::class, 'index']);
     Route::get('/comments/count/{topicID}', [TopicCommentController::class, 'count']);

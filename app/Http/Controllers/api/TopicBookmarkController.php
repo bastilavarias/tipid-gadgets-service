@@ -53,4 +53,27 @@ class TopicBookmarkController extends Controller
             ->success()
             ->generate();
     }
+
+    public function index(Request $request)
+    {
+        $sortBy = $request->sort_by ? $request->sort_by : 'created_at';
+        $orderBy = $request->order_by ? $request->order_by : 'desc';
+        $page = $request->page ? intval($request->page) : 1;
+        $perPage = $request->per_page ? intval($request->per_page) : 10;
+        $userID = $request->user_id ? $request->user_id : null;
+        $query = TopicBookmark::query();
+        if (!empty($userID)) {
+            $query = $query->where('user_id', '=', $userID);
+        }
+        $query
+            ->with(['topic'])
+            ->orderBy($sortBy, $orderBy)
+            ->paginate($perPage, ['*'], 'page', $page);
+        $bookmarks = $query->get();
+        return customResponse()
+            ->data($bookmarks)
+            ->message('You have successfully get user topic bookmarks.')
+            ->success()
+            ->generate();
+    }
 }
