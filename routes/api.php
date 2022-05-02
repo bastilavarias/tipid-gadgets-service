@@ -43,6 +43,10 @@ Route::prefix('authentication')->group(function () {
         AuthenticationController::class,
         'githubAuthentication',
     ]);
+    Route::put('/password', [
+        AuthenticationController::class,
+        'changePassword',
+    ])->middleware('auth:api');
 });
 
 Route::prefix('item')->group(function () {

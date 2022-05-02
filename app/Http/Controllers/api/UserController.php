@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\user\UpdateRequest;
 use App\Http\Requests\user\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;

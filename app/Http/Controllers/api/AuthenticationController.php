@@ -5,9 +5,11 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\authentication\LoginRequest;
 use App\Http\Requests\authentication\RegisterRequest;
+use App\Http\Requests\user\ChangePasswordRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
@@ -118,5 +120,32 @@ class AuthenticationController extends Controller
     {
         $response = Http::withToken($accessToken)->get('https://api.github.com/user');
         return json_decode($response->body());
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $user = User::find(Auth::id());
+        if (empty($user)) {
+            return customResponse()
+                ->data(null)
+                ->message('User not found.')
+                ->notFound()
+                ->generate();
+        }
+        if (Hash::check($request->input('current_password'), $user->password)) {
+            $user = tap($user)->update([
+                'password' => bcrypt($request->input('password')),
+            ]);
+            return customResponse()
+                ->data($user)
+                ->message('Password has been changed.')
+                ->success()
+                ->generate();
+        }
+        return customResponse()
+            ->data(null)
+            ->message('Incorrect current password.')
+            ->failed()
+            ->generate();
     }
 }
