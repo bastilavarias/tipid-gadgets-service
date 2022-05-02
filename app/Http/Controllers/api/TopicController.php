@@ -135,7 +135,11 @@ class TopicController extends Controller
         $perPage = $request->per_page ? intval($request->per_page) : 10;
         $search = $request->search ? $request->search : null;
         $sectionID = $request->section_id ? $request->section_id : null;
+        $userID = $request->user_id ? $request->user_id : null;
         $query = Topic::query();
+        if (!empty($userID)) {
+            $query = $query->where('user_id', '=', $userID);
+        }
         if (!empty($search)) {
             $query = $query->where('name', 'LIKE', '%' . $search . '%');
         }
