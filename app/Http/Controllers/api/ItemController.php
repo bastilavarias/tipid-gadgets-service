@@ -7,6 +7,7 @@ use App\Http\Requests\item\StoreDraftRequest;
 use App\Http\Requests\item\StoreItemRequest;
 use App\Models\Item;
 use App\Models\ItemDescription;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -171,6 +172,7 @@ class ItemController extends Controller
         $warrantyID = $request->warranty_id ? $request->warranty_id : null;
         $minimumPrice = $request->minimum_price ? $request->minimum_price : null;
         $maximumPrice = $request->maximum_price ? $request->maximum_price : null;
+        $userID = $request->user_id ? $request->user_id : null;
         $query = Item::query();
         if (!empty($filterBy)) {
             if ($filterBy == 'items_for_sale') {
@@ -180,6 +182,9 @@ class ItemController extends Controller
                 $wantToBuyID = 2;
                 $query = $query->where('item_section_id', '=', $wantToBuyID);
             }
+        }
+        if (!empty($userID)) {
+            $query = $query->where('user_id', '=', $userID);
         }
         if (!empty($search)) {
             $query = $query->where('name', 'LIKE', '%' . $search . '%');
