@@ -25,4 +25,9 @@ class MessageRoom extends Model
     {
         return $this->hasOne(Item::class, 'id', 'item_id');
     }
+
+    public function chats()
+    {
+        return $this->hasMany(MessageRoomChat::class, 'message_room_id', 'id')->latest();
+    }
 }

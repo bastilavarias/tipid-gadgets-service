@@ -7,6 +7,7 @@ use App\Models\MessageRoom;
 use App\Models\MessageRoomChat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class MessageRoomController extends Controller
 {
@@ -41,14 +42,29 @@ class MessageRoomController extends Controller
             ->generate();
     }
 
-    public function getUserRooms(Request $request, $userID)
+    public function getUserRooms(Request $request)
     {
         $page = $request->page ? intval($request->page) : 1;
         $perPage = $request->per_page ? intval($request->per_page) : 10;
-        $rooms = MessageRoom::with(['host', 'customer', 'item'])
+        $userID = Auth::id();
+        $rooms = MessageRoom::with([
+            'host',
+            'customer',
+            'item',
+            'chats' => function ($query) {},
+        ])
+            ->addSelect([
+                'recent_chat_id' => MessageRoomChat::whereColumn(
+                    'message_rooms.id',
+                    'message_room_id'
+                )
+                    ->latest()
+                    ->select('id')
+                    ->limit(1),
+            ])
             ->where('host_user_id', $userID)
             ->orWhere('customer_user_id', $userID)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('updated_at', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);
         return customResponse()
             ->data($rooms)

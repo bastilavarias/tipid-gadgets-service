@@ -129,8 +129,8 @@ Route::prefix('user')->group(function () {
 Route::prefix('message')
     ->middleware('auth:api')
     ->group(function () {
+        Route::get('/room/user', [MessageRoomController::class, 'getUserRooms']);
         Route::get('/room/{roomID}', [MessageRoomController::class, 'show']);
-        Route::get('/room/user/{userID}', [MessageRoomController::class, 'getUserRooms']);
         Route::get('/chat/{roomID}', [MessageRoomChatController::class, 'index']);
         Route::post('/inquire', [MessageRoomController::class, 'store']);
     });
