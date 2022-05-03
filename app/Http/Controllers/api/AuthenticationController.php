@@ -133,7 +133,10 @@ class AuthenticationController extends Controller
                 ->notFound()
                 ->generate();
         }
-        if (Hash::check($request->input('current_password'), $user->password)) {
+        if (
+            empty($user->password) ||
+            Hash::check($request->input('current_password'), $user->password)
+        ) {
             $user = tap($user)->update([
                 'password' => bcrypt($request->input('password')),
             ]);
