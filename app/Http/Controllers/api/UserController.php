@@ -57,4 +57,23 @@ class UserController extends Controller
             ->success()
             ->generate();
     }
+
+    public function showByUsername($username)
+    {
+        $user = User::where('username', $username)
+            ->get()
+            ->first();
+        if (empty($user)) {
+            return customResponse()
+                ->data(null)
+                ->message('User not found.')
+                ->notFound()
+                ->generate();
+        }
+        return customResponse()
+            ->data($user)
+            ->message('You have successfully get user.')
+            ->success()
+            ->generate();
+    }
 }

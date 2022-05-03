@@ -120,5 +120,6 @@ Route::prefix('topic')->group(function () {
 
 Route::prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'index']);
+    Route::get('/username/{username}', [UserController::class, 'showByUsername']);
     Route::put('/', [UserController::class, 'update'])->middleware('auth:api');
 });
