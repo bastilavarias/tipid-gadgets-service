@@ -19,6 +19,7 @@ return new class extends Migration {
                 ->string('slug')
                 ->nullable()
                 ->unique();
+            $table->string('status')->default('available');
             $table->decimal('price', 9, 3)->nullable();
             $table->boolean('is_draft');
             $table->foreignId('user_id')->constrained('users');

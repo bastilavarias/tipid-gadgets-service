@@ -5,6 +5,8 @@ use App\Http\Controllers\api\ItemController;
 use App\Http\Controllers\api\ItemLikeController;
 use App\Http\Controllers\api\ItemViewController;
 use App\Http\Controllers\api\InsightController;
+use App\Http\Controllers\api\MessageRoomChatController;
+use App\Http\Controllers\api\MessageRoomController;
 use App\Http\Controllers\api\TopicBookmarkController;
 use App\Http\Controllers\api\TopicCommentController;
 use App\Http\Controllers\api\TopicLikeController;
@@ -123,3 +125,12 @@ Route::prefix('user')->group(function () {
     Route::get('/username/{username}', [UserController::class, 'showByUsername']);
     Route::put('/', [UserController::class, 'update'])->middleware('auth:api');
 });
+
+Route::prefix('message')
+    ->middleware('auth:api')
+    ->group(function () {
+        Route::get('/room/{roomID}', [MessageRoomController::class, 'show']);
+        Route::get('/room/user/{userID}', [MessageRoomController::class, 'getUserRooms']);
+        Route::get('/chat/{roomID}', [MessageRoomChatController::class, 'index']);
+        Route::post('/inquire', [MessageRoomController::class, 'store']);
+    });

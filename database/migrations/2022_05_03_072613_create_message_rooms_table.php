@@ -12,8 +12,12 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('contact_number')->nullable();
+        Schema::create('message_rooms', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('item_id')->constrained('items');
+            $table->foreignId('host_user_id')->constrained('users');
+            $table->foreignId('customer_user_id')->constrained('users');
+            $table->timestamps();
         });
     }
 
@@ -24,8 +28,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('contact_number');
-        });
+        Schema::dropIfExists('message_rooms');
     }
 };
