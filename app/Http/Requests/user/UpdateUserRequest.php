@@ -28,6 +28,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => 'required|string',
             'location' => 'required|string',
+            'contact_number' => 'required|string',
         ];
     }
     protected function failedValidation(Validator $validator)

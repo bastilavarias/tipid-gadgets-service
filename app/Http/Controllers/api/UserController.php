@@ -50,6 +50,7 @@ class UserController extends Controller
         $user = tap($user)->update([
             'name' => $request->input('name'),
             'location' => $request->input('location'),
+            'contact_number' => $request->input('contact_number'),
         ]);
         return customResponse()
             ->data($user)

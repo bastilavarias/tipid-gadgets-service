@@ -22,6 +22,7 @@ class AuthenticationController extends Controller
             'username' => $request->input('username'),
             'email' => $request->input('email'),
             'location' => $request->input('location'),
+            'contact_number' => $request->input('contact_number'),
             'password' => bcrypt($request->input('password')),
         ]);
 
