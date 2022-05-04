@@ -12,7 +12,8 @@ class MessageRoomChatController extends Controller
     {
         $page = $request->page ? intval($request->page) : 1;
         $perPage = $request->per_page ? intval($request->per_page) : 10;
-        $chats = MessageRoomChat::where('message_room_id', $roomID)
+        $chats = MessageRoomChat::with(['user'])
+            ->where('message_room_id', $roomID)
             ->orderBy('created_at', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);
         $chats = $chats->reverse()->values();
