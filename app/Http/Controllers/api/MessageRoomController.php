@@ -73,7 +73,17 @@ class MessageRoomController extends Controller
 
     public function show($roomID)
     {
-        $room = MessageRoom::with(['host', 'customer', 'item'])->find($roomID);
+        $room = MessageRoom::with(['host', 'customer', 'item', 'recent_chat'])
+            ->addSelect([
+                'recent_chat_id' => MessageRoomChat::whereColumn(
+                    'message_rooms.id',
+                    'message_room_id'
+                )
+                    ->latest()
+                    ->select('id')
+                    ->limit(1),
+            ])
+            ->find($roomID);
         if (empty($room)) {
             return customResponse()
                 ->data(null)

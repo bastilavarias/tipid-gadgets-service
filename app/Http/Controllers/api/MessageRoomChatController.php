@@ -51,6 +51,7 @@ class MessageRoomChatController extends Controller
             ->latest()
             ->get()
             ->first();
+        $room->touch();
         event(new RoomEvent($room->host_user_id, $room));
         event(new RoomEvent($room->customer_user_id, $room));
         event(new ChatEvent($room->id, $chat));
