@@ -33,6 +33,8 @@ class MessageRoom extends Model
 
     public function recent_chat()
     {
-        return $this->belongsTo(MessageRoomChat::class, 'recent_chat_id', 'id');
+        return $this->belongsTo(MessageRoomChat::class, 'recent_chat_id', 'id')->with([
+            'user',
+        ]);
     }
 }
