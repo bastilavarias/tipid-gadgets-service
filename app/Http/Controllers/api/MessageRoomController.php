@@ -47,12 +47,7 @@ class MessageRoomController extends Controller
         $page = $request->page ? intval($request->page) : 1;
         $perPage = $request->per_page ? intval($request->per_page) : 10;
         $userID = Auth::id();
-        $rooms = MessageRoom::with([
-            'host',
-            'customer',
-            'item',
-            'chats' => function ($query) {},
-        ])
+        $rooms = MessageRoom::with(['host', 'customer', 'item', 'recent_chat'])
             ->addSelect([
                 'recent_chat_id' => MessageRoomChat::whereColumn(
                     'message_rooms.id',

@@ -30,4 +30,9 @@ class MessageRoom extends Model
     {
         return $this->hasMany(MessageRoomChat::class, 'message_room_id', 'id')->latest();
     }
+
+    public function recent_chat()
+    {
+        return $this->belongsTo(MessageRoomChat::class, 'recent_chat_id', 'id');
+    }
 }
