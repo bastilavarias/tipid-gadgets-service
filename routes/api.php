@@ -131,6 +131,10 @@ Route::prefix('message')
     ->group(function () {
         Route::get('/room/user', [MessageRoomController::class, 'getUserRooms']);
         Route::get('/room/{roomID}', [MessageRoomController::class, 'show']);
+        Route::get('/room/check/member/{roomID}', [
+            MessageRoomController::class,
+            'checkMember',
+        ]);
         Route::get('/chat/{roomID}', [MessageRoomChatController::class, 'index']);
         Route::post('/chat', [MessageRoomChatController::class, 'store']);
         Route::post('/inquire', [MessageRoomController::class, 'store']);

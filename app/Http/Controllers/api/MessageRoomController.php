@@ -97,4 +97,29 @@ class MessageRoomController extends Controller
             ->success()
             ->generate();
     }
+
+    public function checkMember($roomID)
+    {
+        $userID = Auth::id();
+        $room = MessageRoom::where('id', $roomID)
+            ->where(function ($query) use ($userID) {
+                return $query
+                    ->where('host_user_id', $userID)
+                    ->orWhere('customer_user_id', $userID);
+            })
+            ->get()
+            ->first();
+        if (empty($room)) {
+            return customResponse()
+                ->data(false)
+                ->message('Not member.')
+                ->failed()
+                ->generate();
+        }
+        return customResponse()
+            ->data(true)
+            ->message('Is member.')
+            ->success()
+            ->generate();
+    }
 }
