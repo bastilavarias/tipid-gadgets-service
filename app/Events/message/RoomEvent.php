@@ -35,7 +35,7 @@ class RoomEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('user-' . $this->userID);
+        return new PrivateChannel('user.' . $this->userID);
     }
 
     public function broadcastAs()

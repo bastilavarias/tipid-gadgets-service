@@ -35,7 +35,7 @@ class ChatEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('room-' . $this->roomID);
+        return new PrivateChannel('room.' . $this->roomID);
     }
 
     public function broadcastAs()
