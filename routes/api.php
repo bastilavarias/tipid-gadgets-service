@@ -132,5 +132,6 @@ Route::prefix('message')
         Route::get('/room/user', [MessageRoomController::class, 'getUserRooms']);
         Route::get('/room/{roomID}', [MessageRoomController::class, 'show']);
         Route::get('/chat/{roomID}', [MessageRoomChatController::class, 'index']);
+        Route::post('/chat', [MessageRoomChatController::class, 'store']);
         Route::post('/inquire', [MessageRoomController::class, 'store']);
     });

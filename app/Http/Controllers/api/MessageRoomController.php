@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Events\MessageRoomEvent;
 use App\Http\Controllers\Controller;
 use App\Models\MessageRoom;
 use App\Models\MessageRoomChat;
@@ -13,9 +14,11 @@ class MessageRoomController extends Controller
 {
     public function store(Request $request)
     {
+        $hostUserID = $request->input('user_id');
+        $customerUserID = Auth::id();
         $room = MessageRoom::where('item_id', $request->input('item_id'))
-            ->where('host_user_id', $request->input('user_id'))
-            ->where('customer_user_id', Auth::id())
+            ->where('host_user_id', $hostUserID)
+            ->where('customer_user_id', $customerUserID)
             ->get()
             ->first();
         if (!empty($room)) {
@@ -27,12 +30,12 @@ class MessageRoomController extends Controller
         }
         $room = MessageRoom::create([
             'item_id' => $request->input('item_id'),
-            'host_user_id' => $request->input('user_id'),
-            'customer_user_id' => Auth::id(),
+            'host_user_id' => $hostUserID,
+            'customer_user_id' => $customerUserID,
         ]);
         MessageRoomChat::create([
             'content' => 'Hi, is this available?',
-            'user_id' => Auth::id(),
+            'user_id' => $customerUserID,
             'message_room_id' => $room->id,
         ]);
         return customResponse()
