@@ -37,4 +37,9 @@ class MessageRoom extends Model
             'user',
         ]);
     }
+
+    public function transaction()
+    {
+        return $this->belongsTo(ItemTransaction::class, 'id', 'message_room_id');
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Events\message\RoomEvent;
 use App\Events\MessageRoomEvent;
 use App\Http\Controllers\Controller;
+use App\Models\ItemTransaction;
 use App\Models\MessageRoom;
 use App\Models\MessageRoomChat;
 use Illuminate\Http\Request;
@@ -16,8 +17,9 @@ class MessageRoomController extends Controller
     public function store(Request $request)
     {
         $hostUserID = $request->input('user_id');
+        $itemID = $request->input('item_id');
         $customerUserID = Auth::id();
-        $room = MessageRoom::where('item_id', $request->input('item_id'))
+        $room = MessageRoom::where('item_id', $itemID)
             ->where('host_user_id', $hostUserID)
             ->where('customer_user_id', $customerUserID)
             ->get()
@@ -30,7 +32,7 @@ class MessageRoomController extends Controller
                 ->generate();
         }
         $room = MessageRoom::create([
-            'item_id' => $request->input('item_id'),
+            'item_id' => $itemID,
             'host_user_id' => $hostUserID,
             'customer_user_id' => $customerUserID,
         ]);
@@ -38,6 +40,12 @@ class MessageRoomController extends Controller
             'content' => 'Hi, is this available?',
             'user_id' => $customerUserID,
             'message_room_id' => $room->id,
+        ]);
+        ItemTransaction::create([
+            'item_id' => $itemID,
+            'message_room_id' => $room->id,
+            'host_user_id' => $hostUserID,
+            'customer_user_id' => $customerUserID,
         ]);
         event(new RoomEvent($hostUserID, $room));
         return customResponse()
@@ -75,7 +83,13 @@ class MessageRoomController extends Controller
 
     public function show($roomID)
     {
-        $room = MessageRoom::with(['host', 'customer', 'item', 'recent_chat'])
+        $room = MessageRoom::with([
+            'host',
+            'customer',
+            'item',
+            'recent_chat',
+            'transaction',
+        ])
             ->addSelect([
                 'recent_chat_id' => MessageRoomChat::whereColumn(
                     'message_rooms.id',

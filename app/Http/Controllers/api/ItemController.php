@@ -211,7 +211,6 @@ class ItemController extends Controller
         $query
             ->with(['user', 'category'])
             ->where('is_draft', '=', 0)
-            ->where('status', '=', 'available')
             ->orderBy($sortBy, $orderBy)
             ->paginate($perPage, ['*'], 'page', $page);
         $items = $query->get();
