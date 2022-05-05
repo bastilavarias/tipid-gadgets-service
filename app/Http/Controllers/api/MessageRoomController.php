@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Events\message\RoomEvent;
 use App\Events\MessageRoomEvent;
 use App\Http\Controllers\Controller;
 use App\Models\MessageRoom;
@@ -38,6 +39,7 @@ class MessageRoomController extends Controller
             'user_id' => $customerUserID,
             'message_room_id' => $room->id,
         ]);
+        event(new RoomEvent($hostUserID, $room));
         return customResponse()
             ->data($room)
             ->message('You successfully created a message room.')
