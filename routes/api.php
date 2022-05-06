@@ -124,6 +124,10 @@ Route::prefix('topic')->group(function () {
 
 Route::prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'index']);
+    Route::get('/{userID}/review/{transactionID}/check', [
+        UserReviewController::class,
+        'check',
+    ])->middleware('auth:api');
     Route::post('/review', [UserReviewController::class, 'store'])->middleware(
         'auth:api'
     );

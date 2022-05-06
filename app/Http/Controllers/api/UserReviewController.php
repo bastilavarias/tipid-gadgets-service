@@ -42,4 +42,27 @@ class UserReviewController extends Controller
             ->success()
             ->generate();
     }
+
+    public function check($userID, $transactionID)
+    {
+        $review = UserReview::where([
+            'transaction_id' => $transactionID,
+            'reviewer_id' => Auth::id(),
+            'reviewee_id' => $userID,
+        ])
+            ->get()
+            ->first();
+        if (empty($review)) {
+            return customResponse()
+                ->data(true)
+                ->message('You valid to review.')
+                ->success()
+                ->generate();
+        }
+        return customResponse()
+            ->data(false)
+            ->message('You not valid to review.')
+            ->success()
+            ->generate();
+    }
 }
