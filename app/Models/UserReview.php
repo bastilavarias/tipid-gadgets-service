@@ -15,4 +15,9 @@ class UserReview extends Model
     {
         return $this->hasOne(ItemTransaction::class, 'id', 'transaction_id');
     }
+
+    public function reviewer()
+    {
+        return $this->hasOne(User::class, 'id', 'reviewer_id');
+    }
 }

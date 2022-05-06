@@ -34,7 +34,7 @@ class UserReviewController extends Controller
             'content' => $request->input('content'),
             'rating' => $request->input('rating'),
         ]);
-        $review = UserReview::with(['transaction'])->find($review->id);
+        $review = UserReview::with(['transaction', 'reviewer'])->find($review->id);
         event(new ReviewEvent($review->transaction->message_room_id, $review));
         return customResponse()
             ->data($review)
