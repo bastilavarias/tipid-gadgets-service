@@ -276,10 +276,30 @@ class ItemController extends Controller
                 ->notFound()
                 ->generate();
         }
+
+        $item->user->setAttribute(
+            'positive_ratings_percentage',
+            $this->getPercentage(
+                $item->user->positive_ratings_count,
+                $item->user->ratings_count
+            )
+        );
+        $item->user->setAttribute(
+            'negative_ratings_percentage',
+            $this->getPercentage(
+                $item->user->negative_ratings_count,
+                $item->user->ratings_count
+            )
+        );
         return customResponse()
             ->data($item)
             ->message('You have successfully get item.')
             ->success()
             ->generate();
+    }
+
+    private function getPercentage($value, $total)
+    {
+        return ($value / $total) * 1;
     }
 }

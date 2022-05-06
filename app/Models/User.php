@@ -39,4 +39,25 @@ class User extends Authenticatable
     {
         return $this->hasMany(Item::class, 'user_id', 'id');
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(UserReview::class, 'reviewee_id', 'id');
+    }
+
+    public function positive_ratings()
+    {
+        return $this->hasMany(UserReview::class, 'reviewee_id', 'id')->where(
+            'rating',
+            'positive'
+        );
+    }
+
+    public function negative_ratings()
+    {
+        return $this->hasMany(UserReview::class, 'reviewee_id', 'id')->where(
+            'rating',
+            'negative'
+        );
+    }
 }

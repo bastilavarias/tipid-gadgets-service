@@ -19,7 +19,10 @@ class Item extends Model
 
     public function user()
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->hasOne(User::class, 'id', 'user_id')
+            ->withCount('ratings')
+            ->withCount('positive_ratings')
+            ->withCount('negative_ratings');
     }
 
     public function section()
