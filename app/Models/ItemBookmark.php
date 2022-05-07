@@ -13,6 +13,10 @@ class ItemBookmark extends Model
 
     public function item()
     {
-        return $this->belongsTo(Item::class, 'item_id', 'id')->with(['user', 'category']);
+        return $this->belongsTo(Item::class, 'item_id', 'id')->with([
+            'user',
+            'category',
+            'section',
+        ]);
     }
 }

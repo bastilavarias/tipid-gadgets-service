@@ -13,6 +13,10 @@ class ItemTransaction extends Model
 
     public function item()
     {
-        return $this->hasOne(Item::class, 'id', 'item_id')->with(['category', 'user']);
+        return $this->hasOne(Item::class, 'id', 'item_id')->with([
+            'category',
+            'user',
+            'section',
+        ]);
     }
 }
