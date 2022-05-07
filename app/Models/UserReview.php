@@ -13,11 +13,18 @@ class UserReview extends Model
 
     public function transaction()
     {
-        return $this->hasOne(ItemTransaction::class, 'id', 'transaction_id');
+        return $this->hasOne(ItemTransaction::class, 'id', 'transaction_id')->with([
+            'item',
+        ]);
     }
 
     public function reviewer()
     {
         return $this->hasOne(User::class, 'id', 'reviewer_id');
+    }
+
+    public function item()
+    {
+        return $this->hasOne(Item::class, 'id', 'item_id');
     }
 }

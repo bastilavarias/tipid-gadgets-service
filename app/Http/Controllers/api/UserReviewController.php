@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Events\user\ReviewEvent;
 use App\Http\Controllers\Controller;
+use App\Models\Item;
 use App\Models\UserReview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -62,6 +63,27 @@ class UserReviewController extends Controller
         return customResponse()
             ->data(false)
             ->message('You not valid to review.')
+            ->success()
+            ->generate();
+    }
+
+    public function index(Request $request)
+    {
+        $page = $request->page ? intval($request->page) : 1;
+        $perPage = $request->per_page ? intval($request->per_page) : 10;
+        $userID = $request->user_id ? $request->user_id : null;
+        $query = UserReview::query();
+        if (!empty($userID)) {
+            $query = $query->where('reviewee_id', '=', $userID);
+        }
+        $query
+            ->with(['reviewer', 'transaction'])
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage, ['*'], 'page', $page);
+        $items = $query->get();
+        return customResponse()
+            ->data($items)
+            ->message('You have successfully get user reviews.')
             ->success()
             ->generate();
     }
