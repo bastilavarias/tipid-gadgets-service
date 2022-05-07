@@ -209,7 +209,7 @@ class ItemController extends Controller
             }
         }
         $query
-            ->with(['user', 'category'])
+            ->with(['user', 'category', 'section'])
             ->where('is_draft', '=', 0)
             ->orderBy($sortBy, $orderBy)
             ->paginate($perPage, ['*'], 'page', $page);
