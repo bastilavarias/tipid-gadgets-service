@@ -13,6 +13,7 @@ use App\Http\Controllers\api\TopicCommentController;
 use App\Http\Controllers\api\TopicLikeController;
 use App\Http\Controllers\api\TopicViewController;
 use App\Http\Controllers\api\UserController;
+use App\Http\Controllers\api\UserFollowerController;
 use App\Http\Controllers\api\UserReviewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\ReferenceController;
@@ -125,11 +126,18 @@ Route::prefix('topic')->group(function () {
 Route::prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'index']);
     Route::get('/reviews', [UserReviewController::class, 'index']);
+    Route::get('/follow/check/{userID}', [
+        UserFollowerController::class,
+        'check',
+    ])->middleware('auth:api');
     Route::get('/{userID}/reviews/{transactionID}/check', [
         UserReviewController::class,
         'check',
     ])->middleware('auth:api');
     Route::post('/review', [UserReviewController::class, 'store'])->middleware(
+        'auth:api'
+    );
+    Route::post('/follow', [UserFollowerController::class, 'store'])->middleware(
         'auth:api'
     );
     Route::get('/username/{username}', [UserController::class, 'showByUsername']);
