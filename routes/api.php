@@ -130,7 +130,7 @@ Route::prefix('user')->group(function () {
         UserFollowerController::class,
         'check',
     ])->middleware('auth:api');
-    Route::get('/{userID}/reviews/{transactionID}/check', [
+    Route::get('/review/{userID}/{transactionID}/check', [
         UserReviewController::class,
         'check',
     ])->middleware('auth:api');
