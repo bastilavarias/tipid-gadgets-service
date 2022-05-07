@@ -13,9 +13,10 @@ class TopicCommentController extends Controller
 {
     public function store(Request $request)
     {
+        $topicID = $request->input('topic_id');
         $comment = TopicComment::create([
             'content' => $request->input('content'),
-            'topic_id' => $request->input('topic_id'),
+            'topic_id' => $topicID,
             'user_id' => Auth::id(),
         ]);
         if (!empty($request->comment_id)) {
@@ -24,6 +25,8 @@ class TopicCommentController extends Controller
                 'reply_id' => $comment->id,
             ]);
         }
+        $topic = Topic::find($topicID);
+        $topic->touch();
         $comment = TopicComment::with(['topic', 'replyTo'])->find($comment->id);
         return customResponse()
             ->data($comment)

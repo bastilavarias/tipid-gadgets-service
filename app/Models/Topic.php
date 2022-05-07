@@ -41,4 +41,9 @@ class Topic extends Model
     {
         return $this->hasMany(TopicBookmark::class, 'topic_id', 'id');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(TopicComment::class, 'topic_id', 'id');
+    }
 }

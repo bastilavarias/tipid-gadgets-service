@@ -129,7 +129,7 @@ class TopicController extends Controller
 
     public function index(Request $request)
     {
-        $sortBy = $request->sort_by ? $request->sort_by : 'created_at';
+        $sortBy = $request->sort_by ? $request->sort_by : 'updated_at';
         $orderBy = $request->order_by ? $request->order_by : 'desc';
         $page = $request->page ? intval($request->page) : 1;
         $perPage = $request->per_page ? intval($request->per_page) : 10;
@@ -148,6 +148,7 @@ class TopicController extends Controller
         }
         $query
             ->with(['user', 'section'])
+            ->withCount(['comments'])
             ->where('is_draft', '=', 0)
             ->orderBy($sortBy, $orderBy)
             ->paginate($perPage, ['*'], 'page', $page);
