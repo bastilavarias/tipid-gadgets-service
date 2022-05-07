@@ -300,6 +300,6 @@ class ItemController extends Controller
 
     private function getPercentage($value, $total)
     {
-        return ($value / $total) * 1;
+        return ($value / $total) * 100;
     }
 }
