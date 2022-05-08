@@ -57,4 +57,30 @@ class UserFollowerController extends Controller
             ->success()
             ->generate();
     }
+
+    public function index(Request $request)
+    {
+        $page = $request->page ? intval($request->page) : 1;
+        $perPage = $request->per_page ? intval($request->per_page) : 10;
+        $filterBy = $request->filter_by ? $request->filter_by : null;
+        $userID = $request->user_id ? $request->user_id : null;
+        $query = UserFollower::query();
+        if (!empty($filterBy)) {
+            if ($filterBy == 'follower') {
+                $query = $query->where('user_id', $userID);
+            } elseif ($filterBy == 'following') {
+                $query = $query->where('follower_id', '=', $userID);
+            }
+        }
+        $query
+            ->with(['user', 'follower'])
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage, ['*'], 'page', $page);
+        $users = $query->get();
+        return customResponse()
+            ->data($users)
+            ->message('You have successfully get users.')
+            ->success()
+            ->generate();
+    }
 }

@@ -126,6 +126,7 @@ Route::prefix('topic')->group(function () {
 Route::prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'index']);
     Route::get('/reviews', [UserReviewController::class, 'index']);
+    Route::get('/follow', [UserFollowerController::class, 'index']);
     Route::get('/follow/check/{userID}', [
         UserFollowerController::class,
         'check',

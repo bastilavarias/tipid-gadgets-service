@@ -10,4 +10,14 @@ class UserFollower extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function follower()
+    {
+        return $this->hasOne(User::class, 'id', 'follower_id');
+    }
 }
