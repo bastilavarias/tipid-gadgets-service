@@ -56,8 +56,17 @@ class ItemController extends Controller
             'item_description_id' => $createdDescription->id,
             'is_draft' => 0,
         ]);
+        $slug = strtolower(
+            trim(
+                preg_replace(
+                    '/[^A-Za-z0-9-]+/',
+                    '_',
+                    $createdItem->name . '_' . $createdItem->id
+                )
+            )
+        );
         Item::where('id', $createdItem->id)->update([
-            'slug' => Str::of($createdItem->name)->snake() . '_' . $createdItem->id,
+            'slug' => $slug,
         ]);
         $foundItem = Item::where('id', $createdItem->id)
             ->get()
@@ -300,6 +309,9 @@ class ItemController extends Controller
 
     private function getPercentage($value, $total)
     {
+        if ($total == 0) {
+            return 0;
+        }
         return ($value / $total) * 100;
     }
 }

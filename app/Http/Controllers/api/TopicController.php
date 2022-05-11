@@ -117,8 +117,11 @@ class TopicController extends Controller
             'topic_description_id' => $description->id,
             'is_draft' => 0,
         ]);
+        $slug = strtolower(
+            trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $topic->name . '_' . $topic->id))
+        );
         $topic = tap($topic)->update([
-            'slug' => Str::of($topic->name)->snake() . '_' . $topic->id,
+            'slug' => $slug,
         ]);
         return customResponse()
             ->data($topic)
