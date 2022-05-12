@@ -76,7 +76,7 @@ class TopicController extends Controller
             ->generate();
     }
 
-    public function deleteDraft($topicID)
+    public function destroy($topicID)
     {
         $topic = Topic::find($topicID)->delete();
         return customResponse()

@@ -155,15 +155,15 @@ class ItemController extends Controller
             ->generate();
     }
 
-    public function deleteDraft($id)
+    public function destroy($itemID)
     {
-        $item = Item::where('id', $id)
+        $item = Item::where('id', $itemID)
             ->get()
             ->first();
         $item->delete();
         return customResponse()
             ->data(null)
-            ->message('You have successfully deleted a drafted item.')
+            ->message('You have successfully deleted a item.')
             ->success()
             ->generate();
     }

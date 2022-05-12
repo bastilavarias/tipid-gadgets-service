@@ -75,7 +75,7 @@ Route::prefix('item')->group(function () {
         'auth:api'
     );
     Route::get('/likes/count/{itemID}', [ItemLikeController::class, 'count']);
-    Route::delete('/drafts/{id}', [ItemController::class, 'deleteDraft'])->middleware(
+    Route::delete('/{itemID}', [ItemController::class, 'destroy'])->middleware(
         'auth:api'
     );
     Route::get('/{id}/images', [ItemController::class, 'getImages']);
@@ -117,10 +117,9 @@ Route::prefix('topic')->group(function () {
         'check',
     ])->middleware('auth:api');
     Route::get('/likes/count/{topicID}', [TopicLikeController::class, 'count']);
-    Route::delete('/drafts/{topicID}', [
-        TopicController::class,
-        'deleteDraft',
-    ])->middleware('auth:api');
+    Route::delete('/{topicID}', [TopicController::class, 'destroy'])->middleware(
+        'auth:api'
+    );
 });
 
 Route::prefix('user')->group(function () {
