@@ -79,6 +79,7 @@ Route::prefix('item')->group(function () {
         'auth:api'
     );
     Route::get('/{id}/images', [ItemController::class, 'getImages']);
+    Route::put('/{itemID}', [ItemController::class, 'update'])->middleware('auth:api');
 });
 
 Route::prefix('insight')

@@ -18,9 +18,7 @@ class ItemController extends Controller
     {
         if (!empty($request->input('id'))) {
             $itemID = $request->input('id');
-            $foundItem = Item::where('id', $itemID)
-                ->get()
-                ->first();
+            $foundItem = Item::find($itemID);
             Item::where('id', $itemID)->update([
                 'user_id' => Auth::id(),
                 'id' => $itemID,
@@ -303,6 +301,37 @@ class ItemController extends Controller
         return customResponse()
             ->data($item)
             ->message('You have successfully get item.')
+            ->success()
+            ->generate();
+    }
+
+    public function update(StoreItemRequest $request, $itemID)
+    {
+        $item = Item::find($itemID);
+        if (empty($item)) {
+            return customResponse()
+                ->data(null)
+                ->message('Topic not found.')
+                ->notFound()
+                ->generate();
+        }
+        $item = tap($item)->update([
+            'user_id' => Auth::id(),
+            'id' => $itemID,
+            'item_section_id' => $request->input('item_section_id'),
+            'name' => $request->input('name'),
+            'item_category_id' => $request->input('item_category_id'),
+            'price' => $request->input('price'),
+            'item_condition_id' => $request->input('item_condition_id'),
+            'item_warranty_id' => $request->input('item_warranty_id'),
+            'is_draft' => 0,
+        ]);
+        ItemDescription::where('id', $item->item_description_id)->update([
+            'content' => $request->input('description'),
+        ]);
+        return customResponse()
+            ->data($item)
+            ->message('You have successfully posted an item.')
             ->success()
             ->generate();
     }
