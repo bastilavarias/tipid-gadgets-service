@@ -16,8 +16,8 @@ class ItemController extends Controller
 {
     public function store(StoreItemRequest $request)
     {
+        $itemID = $request->input('id');
         if (!empty($request->input('id'))) {
-            $itemID = $request->input('id');
             $foundItem = Item::find($itemID);
             Item::where('id', $itemID)->update([
                 'user_id' => Auth::id(),
@@ -40,10 +40,10 @@ class ItemController extends Controller
                 ->generate();
         }
 
-        $createdDescription = ItemDescription::create([
+        $description = ItemDescription::create([
             'content' => $request->input('description'),
         ]);
-        $createdItem = Item::create([
+        $item = Item::create([
             'user_id' => Auth::id(),
             'item_section_id' => $request->input('item_section_id'),
             'name' => $request->input('name'),
@@ -51,26 +51,17 @@ class ItemController extends Controller
             'price' => $request->input('price'),
             'item_condition_id' => $request->input('item_condition_id'),
             'item_warranty_id' => $request->input('item_warranty_id'),
-            'item_description_id' => $createdDescription->id,
+            'item_description_id' => $description->id,
             'is_draft' => 0,
         ]);
         $slug = strtolower(
-            trim(
-                preg_replace(
-                    '/[^A-Za-z0-9-]+/',
-                    '_',
-                    $createdItem->name . '_' . $createdItem->id
-                )
-            )
+            trim(preg_replace('/[^A-Za-z0-9-]+/', '_', $item->name . '_' . $item->id))
         );
-        Item::where('id', $createdItem->id)->update([
+        $item = tap($item)->update([
             'slug' => $slug,
         ]);
-        $foundItem = Item::where('id', $createdItem->id)
-            ->get()
-            ->first();
         return customResponse()
-            ->data($foundItem)
+            ->data($item)
             ->message('You have successfully posted an item.')
             ->success()
             ->generate();
@@ -93,11 +84,12 @@ class ItemController extends Controller
 
     public function storeDraft(StoreDraftRequest $request)
     {
-        if (empty($request->input('id'))) {
-            $createdDescription = ItemDescription::create([
+        $itemID = $request->input('id');
+        if (empty($itemID)) {
+            $description = ItemDescription::create([
                 'content' => $request->input('description'),
             ]);
-            $createdItem = Item::create([
+            $item = Item::create([
                 'user_id' => Auth::id(),
                 'item_section_id' => $request->input('item_section_id'),
                 'name' => $request->input('name'),
@@ -105,34 +97,28 @@ class ItemController extends Controller
                 'price' => $request->input('price'),
                 'item_condition_id' => $request->input('item_condition_id'),
                 'item_warranty_id' => $request->input('item_warranty_id'),
-                'item_description_id' => $createdDescription->id,
+                'item_description_id' => $description->id,
                 'is_draft' => 1,
             ]);
-            Item::where('id', $createdItem->id)->update([
-                'slug' => Str::of($createdItem->name)->snake() . '_' . $createdItem->id,
+            $item = tap($item)->update([
+                'slug' => Str::of($item->name)->snake() . '_' . $item->id,
             ]);
-            $foundItem = Item::where('id', $createdItem)
-                ->get()
-                ->first();
             return customResponse()
-                ->data($foundItem)
+                ->data($item)
                 ->message('You have successfully created drafted item.')
                 ->success()
                 ->generate();
         }
 
-        $itemID = $request->input('id');
-        $foundItem = Item::where('id', $itemID)
-            ->get()
-            ->first();
-        if (!$foundItem->is_draft) {
+        $item = Item::find($itemID);
+        if (!$item->is_draft) {
             return customResponse()
                 ->data(null)
                 ->message('You cant save a draft item if already posted.')
                 ->failed()
                 ->generate();
         }
-        Item::where('id', $itemID)->update([
+        $item = tap($item)->update([
             'user_id' => Auth::id(),
             'id' => $itemID,
             'item_section_id' => $request->input('item_section_id'),
@@ -143,11 +129,11 @@ class ItemController extends Controller
             'item_warranty_id' => $request->input('item_warranty_id'),
             'is_draft' => 1,
         ]);
-        ItemDescription::where('id', $foundItem->item_description_id)->update([
+        ItemDescription::where('id', $item->item_description_id)->update([
             'content' => $request->input('description'),
         ]);
         return customResponse()
-            ->data($foundItem)
+            ->data($item)
             ->message('You have successfully updated drafted item.')
             ->success()
             ->generate();
@@ -155,9 +141,7 @@ class ItemController extends Controller
 
     public function destroy($itemID)
     {
-        $item = Item::where('id', $itemID)
-            ->get()
-            ->first();
+        $item = Item::find($itemID);
         $item->delete();
         return customResponse()
             ->data(null)
@@ -230,10 +214,7 @@ class ItemController extends Controller
 
     public function getImages($id)
     {
-        $item = Item::with(['description'])
-            ->where('id', $id)
-            ->get()
-            ->first();
+        $item = Item::with(['description'])->find($id);
         if (empty($item)) {
             return customResponse()
                 ->data(null)
@@ -259,7 +240,7 @@ class ItemController extends Controller
 
     public function extractBase64Images($text)
     {
-        $pattern = '#data:image/(gif|png|jpeg);base64,([\w=+/]++)#';
+        $pattern = '#data:image/(gif|png|jpeg|webp|jpg);base64,([\w=+/]++)#';
         return preg_match_all($pattern, $text, $output) ? $output[0] : [];
     }
 
