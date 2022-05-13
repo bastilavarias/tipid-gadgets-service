@@ -292,7 +292,7 @@ class ItemController extends Controller
         if (empty($item)) {
             return customResponse()
                 ->data(null)
-                ->message('Topic not found.')
+                ->message('Item not found.')
                 ->notFound()
                 ->generate();
         }
@@ -312,7 +312,7 @@ class ItemController extends Controller
         ]);
         return customResponse()
             ->data($item)
-            ->message('You have successfully posted an item.')
+            ->message('You have successfully updated an item.')
             ->success()
             ->generate();
     }

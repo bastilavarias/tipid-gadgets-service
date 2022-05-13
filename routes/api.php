@@ -121,6 +121,7 @@ Route::prefix('topic')->group(function () {
     Route::delete('/{topicID}', [TopicController::class, 'destroy'])->middleware(
         'auth:api'
     );
+    Route::put('/{topicID}', [TopicController::class, 'update'])->middleware('auth:api');
 });
 
 Route::prefix('user')->group(function () {

@@ -182,4 +182,31 @@ class TopicController extends Controller
             ->success()
             ->generate();
     }
+
+    public function update(StoreTopicRequest $request, $topicID)
+    {
+        $topic = Topic::find($topicID);
+        if (empty($topic)) {
+            return customResponse()
+                ->data(null)
+                ->message('Topic not found.')
+                ->notFound()
+                ->generate();
+        }
+        $topic = tap($topic)->update([
+            'user_id' => Auth::id(),
+            'id' => $topicID,
+            'topic_section_id' => $request->input('topic_section_id'),
+            'name' => $request->input('name'),
+            'is_draft' => 0,
+        ]);
+        $topic->description->update([
+            'content' => $request->input('description'),
+        ]);
+        return customResponse()
+            ->data($topic)
+            ->message('You have successfully updated a topic.')
+            ->success()
+            ->generate();
+    }
 }
