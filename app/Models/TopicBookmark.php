@@ -13,9 +13,8 @@ class TopicBookmark extends Model
 
     public function topic()
     {
-        return $this->belongsTo(Topic::class, 'topic_id', 'id')->with([
-            'user',
-            'section',
-        ]);
+        return $this->belongsTo(Topic::class, 'topic_id', 'id')
+            ->with(['user', 'section'])
+            ->withCount(['comments']);
     }
 }
