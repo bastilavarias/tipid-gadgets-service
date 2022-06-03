@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Events\user\NotificationEvent;
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\Topic;
 use App\Models\TopicComment;
 use App\Models\TopicCommentReply;
@@ -14,10 +16,11 @@ class TopicCommentController extends Controller
     public function store(Request $request)
     {
         $topicID = $request->input('topic_id');
+        $commenterID = Auth::id();
         $comment = TopicComment::create([
             'content' => $request->input('content'),
             'topic_id' => $topicID,
-            'user_id' => Auth::id(),
+            'user_id' => $commenterID,
         ]);
         if (!empty($request->comment_id)) {
             TopicCommentReply::create([
@@ -27,7 +30,19 @@ class TopicCommentController extends Controller
         }
         $topic = Topic::find($topicID);
         $topic->touch();
-        $comment = TopicComment::with(['topic', 'replyTo'])->find($comment->id);
+        $comment = $topic
+            ->comments()
+            ->with(['topic', 'replyTo'])
+            ->find($comment->id);
+        if ($topic->user_id !== $commenterID) {
+            $notification = Notification::create([
+                'type' => 'comment',
+                'action' => 'comment',
+                'comment_id' => $comment->id,
+            ]);
+            $notification = Notification::with(['comment'])->find($notification->id);
+            event(new NotificationEvent($topic->user_id, $notification));
+        }
         return customResponse()
             ->data($comment)
             ->message('You have successfully posted a comment.')
