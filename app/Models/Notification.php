@@ -23,6 +23,6 @@ class Notification extends Model
 
     public function comment()
     {
-        return $this->hasOne(TopicComment::class, 'id', 'comment_id');
+        return $this->hasOne(TopicComment::class, 'id', 'comment_id')->with(['topic']);
     }
 }
