@@ -67,9 +67,8 @@ class ItemBookmarkController extends Controller
         }
         $query
             ->with(['item'])
-            ->orderBy($sortBy, $orderBy)
-            ->paginate($perPage, ['*'], 'page', $page);
-        $bookmarks = $query->get();
+            ->orderBy($sortBy, $orderBy);
+        $bookmarks = $query->paginate($perPage, ['*'], 'page', $page);
         return customResponse()
             ->data($bookmarks)
             ->message('You have successfully get user item bookmarks.')

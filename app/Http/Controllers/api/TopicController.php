@@ -153,9 +153,8 @@ class TopicController extends Controller
             ->with(['user', 'section'])
             ->withCount(['comments'])
             ->where('is_draft', '=', 0)
-            ->orderBy($sortBy, $orderBy)
-            ->paginate($perPage, ['*'], 'page', $page);
-        $topics = $query->get();
+            ->orderBy($sortBy, $orderBy);
+        $topics = $query->paginate($perPage, ['*'], 'page', $page);
         return customResponse()
             ->data($topics)
             ->message('You have successfully get topic posts.')

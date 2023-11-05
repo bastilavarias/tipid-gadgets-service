@@ -78,9 +78,8 @@ class UserReviewController extends Controller
         }
         $query
             ->with(['reviewer', 'transaction'])
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage, ['*'], 'page', $page);
-        $items = $query->get();
+            ->orderBy('created_at', 'desc');
+        $items = $query->paginate($perPage, ['*'], 'page', $page);
         return customResponse()
             ->data($items)
             ->message('You have successfully get user reviews.')

@@ -74,9 +74,8 @@ class UserFollowerController extends Controller
         }
         $query
             ->with(['user', 'follower'])
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage, ['*'], 'page', $page);
-        $users = $query->get();
+            ->orderBy('created_at', 'desc');
+        $users = $query->paginate($perPage, ['*'], 'page', $page);
         return customResponse()
             ->data($users)
             ->message('You have successfully get users.')
